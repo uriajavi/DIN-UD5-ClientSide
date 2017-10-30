@@ -1,0 +1,48 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 9, 2017, 6:09:53 PM
+    Author     : javi
+*/
+
+.root{
+    -fx-button-base-color: dodgerblue;
+    -fx-button-hover-color: deepskyblue;
+    -fx-button-armed-color: darkblue;
+}
+
+.label {
+    -fx-font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+.button{
+    -fx-font-family: "Trebuchet MS", Helvetica, sans-serif;
+    -fx-font-weight: bold;
+    -fx-background-color:  -fx-inner-border,-fx-outer-border, -fx-button-base-color;
+    -fx-text-fill: -fx-shadow-highlight-color;
+ }
+
+.button:hover {
+    -fx-background-color: -fx-inner-border,-fx-outer-border, -fx-button-hover-color;
+}
+
+.button:armed {
+    -fx-background-color:-fx-inner-border,-fx-outer-border, -fx-button-armed-color;
+ }
+
+#eliminar{
+    -fx-background-color:-fx-inner-border,-fx-outer-border, tomato;
+}
+
+#eliminar:hover {
+    -fx-background-color: -fx-inner-border,-fx-outer-border,lightcoral;    
+}
+
+#eliminar:armed {
+    -fx-background-color: -fx-inner-border,-fx-outer-border,red;    
+}
+
+
