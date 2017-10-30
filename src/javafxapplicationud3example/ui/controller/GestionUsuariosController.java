@@ -6,11 +6,19 @@
 package javafxapplicationud3example.ui.controller;
 
 import java.util.logging.Logger;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -33,7 +41,17 @@ public class GestionUsuariosController{
     private Button btSalir;
     @FXML
     private TextField tfLogin;
-
+    @FXML
+    private CheckBox ckSelectAll;
+    @FXML
+    private RadioButton rbUsuario;
+    @FXML
+    private RadioButton rbAdmin;
+    @FXML
+    private ToggleGroup tgPerfil;
+    @FXML
+    private ComboBox cbDepartamentos;
+    
     private Stage stage;
     
     public Stage getStage(){
@@ -55,7 +73,6 @@ public class GestionUsuariosController{
         stage.setTitle("Gestion de Usuarios");
         stage.setResizable(false);
         stage.setOnShowing(this::handleWindowShowing);
-        tfLogin.setOnKeyTyped(this::handleTextChanged);
         stage.showAndWait();
     }
     
@@ -66,14 +83,48 @@ public class GestionUsuariosController{
      */
     private void handleWindowShowing(WindowEvent event){
         logger.info("Beginning GestionUsuariosController::handleWindowShowing");
+        //Establecer datos de la combo de departamentos
+        ObservableList<String> departmentNames=
+                FXCollections.observableArrayList("FOL",
+                                                  "Informática",
+                                                  "Electrónica",
+                                                  "Imagen y Sonido");
+        cbDepartamentos.setItems(departmentNames);
+        //Seleccionar un departamento por defecto
+        cbDepartamentos.getSelectionModel().select("Electrónica");
+        //Obtener valor seleccionado en la combo y moverlo a un campo de texto
+        tfLogin.setText(cbDepartamentos.getValue().toString());
         //Los botones Crear, Modificar y Eliminar se 
         //deshabilitan.
         //btEliminar.disableProperty()
+        //Seleccionar Select All
+        ckSelectAll.setSelected(true);
+        //Seleccionar perfil administrador
+        tgPerfil.selectToggle(rbAdmin);
+        //Añadir manejador para eventos de foco
+        tfLogin.focusedProperty().addListener(this::focusChanged);
         
+    }
+    /**
+     * Manejador de evento para un cambio de foco.
+     */
+    private void focusChanged(ObservableValue observable,
+             Boolean oldValue,
+             Boolean newValue){
+        if(newValue)
+            logger.info("onFocus");
+        else if(oldValue)
+            logger.info("onBlur");
     }
     @FXML
     private void handleTextChanged(KeyEvent event) {
         logger.info("Text Changed event.");
-    }    
+    }
+    @FXML
+    private void handleEliminarAction(ActionEvent event){
+        //Enfocar campo de login y poner el texto en rojo
+        tfLogin.requestFocus();
+        tfLogin.setStyle("-fx-text-inner-color: red;");
+    }
 
 }

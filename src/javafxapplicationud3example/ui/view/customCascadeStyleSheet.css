@@ -12,7 +12,7 @@ and open the template in the editor.
     -fx-button-base-color: dodgerblue;
     -fx-button-hover-color: deepskyblue;
     -fx-button-armed-color: darkblue;
-}
+  }
 
 .label {
     -fx-font-family: "Comic Sans MS", cursive, sans-serif;

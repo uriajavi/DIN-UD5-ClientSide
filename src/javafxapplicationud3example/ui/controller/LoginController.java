@@ -19,7 +19,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
-import javafx.scene.input.InputMethodEvent;
+import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -77,6 +77,15 @@ public class LoginController {
         logger.info("Beginning LoginController::handleWindowShowing");
         //El botón Aceptar se deshabilita
         btAceptar.setDisable(true);
+        //Establecer prompt text
+        tfUsuario.setPromptText("Introduzca el nombre de usuario..");
+        tfPassword.setPromptText("Introduzca su contraseña...");
+        //Establecer tooltip para btAceptar
+        btAceptar.setTooltip(
+                new Tooltip("Pulse para validar credenciales"));
+        btAceptar.setMnemonicParsing(true);
+        btAceptar.setText("_Aceptar");
+        
     }
     /**
      * Manejador de evento de pulsación sobre el botón de Aceptar. Valida que el 
