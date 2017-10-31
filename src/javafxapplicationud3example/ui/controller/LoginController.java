@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,6 +21,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafxapplicationud3example.businessLogic.UsersManager;
 
 /**
  * Clase que define los manejadores de eventos de la interfaz definida mediante
@@ -36,6 +36,12 @@ public class LoginController {
     private TextField tfPassword;
     @FXML
     private Button btAceptar;
+    //Referencia para el objeto de la capa de lógica de negocio
+    private UsersManager usersManager;
+
+    public void setUsersManager(UsersManager usersManager){
+        this.usersManager=usersManager;
+    }
 
     private Stage stage;
     
@@ -65,6 +71,7 @@ public class LoginController {
         //tfPassword.setOnKeyTyped(this::handleTextChanged);
         //Set control events handlers (if not set by FXML)
         tfUsuario.textProperty().addListener(this::textChanged);
+        tfPassword.textProperty().addListener(this::textChanged);
         //Show primary window
         stage.show();
     }
@@ -78,7 +85,7 @@ public class LoginController {
         //El botón Aceptar se deshabilita
         btAceptar.setDisable(true);
         //Establecer prompt text
-        tfUsuario.setPromptText("Introduzca el nombre de usuario..");
+        tfUsuario.setPromptText("Introduzca su id...");
         tfPassword.setPromptText("Introduzca su contraseña...");
         //Establecer tooltip para btAceptar
         btAceptar.setTooltip(
@@ -118,15 +125,18 @@ public class LoginController {
                 //Get controller for graph 
                 GestionUsuariosController controller=
                         ((GestionUsuariosController)loader.getController());
+                controller.setUsersManager(usersManager);
                 //Initializes stage
                 controller.initStage(root);
+                //hides login stage
+                stage.hide();
             }catch(IOException ex){
                 Alert alert=new Alert(AlertType.ERROR,
                                       "No se ha podido abrir la ventana:"+
                                        ex.getMessage(),
                                        ButtonType.OK);
                 alert.getDialogPane().getStylesheets().add(
-                    getClass().getResource("customCascadeStyleSheet.css").toExternalForm());
+                    getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
                 alert.showAndWait();
             }
         }
@@ -137,24 +147,9 @@ public class LoginController {
      * botón Aceptar. Si están informados habilita el botón.
      * @param event El evento de método de entrada (InputMethodEvent) producido 
      */
-    @FXML
-    private void handleTextChanged(Event event) {
-        logger.info("Text Changed event: setOnKeyType");
-        if(tfUsuario.getText().trim().isEmpty()||
-           tfPassword.getText().trim().isEmpty())
-            btAceptar.setDisable(true);
-        else btAceptar.setDisable(false);
-    }
-    /**
-     * Manejador de evento de cambio de texto. Valida que el 
-     * usuario y la contraseña están informados. Si no lo están deshabilita el 
-     * botón Aceptar. Si están informados habilita el botón.
-     * @param event El evento de método de entrada (InputMethodEvent) producido 
-     */
     private void textChanged(ObservableValue observable,
              String oldValue,
              String newValue){
-        logger.info("Text Changed event: ChangeListener");
         if(tfUsuario.getText().trim().isEmpty()||
            tfPassword.getText().trim().isEmpty())
             btAceptar.setDisable(true);

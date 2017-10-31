@@ -10,6 +10,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafxapplicationud3example.businessLogic.UsersManager;
+import javafxapplicationud3example.businessLogic.UsersManagerTestDataGenerator;
 import javafxapplicationud3example.ui.controller.LoginController;
 
 /**
@@ -24,16 +26,21 @@ public class ApplicationUD3Example extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
+        //Create Bussines Logic Controller to be passed to UI controllers
+        UsersManager bussinessLogicController=new UsersManagerTestDataGenerator();
         //Load node graph from fxml file
         FXMLLoader loader=new FXMLLoader(
                 getClass().getResource("ui/view/Login.fxml"));
         Parent root = (Parent)loader.load();
-        //Get controller for graph and set a reference for Stage
-        LoginController controller=
+        //Get controller for graph 
+        LoginController primaryStageController=
                 ((LoginController)loader.getController());
-        controller.setStage(primaryStage);
+        //Set a reference in UI controller para Bussiness Logic Controllesr
+        primaryStageController.setUsersManager(bussinessLogicController);
+        //Set a reference for Stage
+        primaryStageController.setStage(primaryStage);
         //Initializes primary stage
-        controller.initStage(root);
+        primaryStageController.initStage(root);
     }
 
     /**

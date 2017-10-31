@@ -18,7 +18,7 @@
       <Label text="Usuario" />
       <TextField fx:id="tfUsuario" />
       <Label text="Contraseña" />
-      <PasswordField fx:id="tfPassword" onKeyTyped="#handleTextChanged" />
+      <PasswordField fx:id="tfPassword" />
       <HBox alignment="BOTTOM_RIGHT" prefHeight="73.0" prefWidth="364.0">
          <children>
             <Button fx:id="btAceptar" mnemonicParsing="false" 
