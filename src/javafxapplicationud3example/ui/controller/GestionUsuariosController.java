@@ -32,6 +32,8 @@ import javafx.stage.WindowEvent;
 import javafxapplicationud3example.businessLogic.UsersManager;
 import javafxapplicationud3example.businessLogic.BusinessLogicException;
 import javafxapplicationud3example.businessLogic.LoginExistsException;
+import javafxapplicationud3example.transferObjects.DepartmentBean;
+import javafxapplicationud3example.transferObjects.Profile;
 import javafxapplicationud3example.transferObjects.UserBean;
 
 /**
@@ -117,37 +119,34 @@ public class GestionUsuariosController{
      */
     private void handleWindowShowing(WindowEvent event){
         logger.info("Beginning GestionUsuariosController::handleWindowShowing");
-        //Establecer datos de la combo de departamentos
-        ObservableList<String> departmentNames=
-                FXCollections.observableArrayList("FOL",
-                                                  "Informática",
-                                                  "Electrónica",
-                                                  "Imagen y Sonido");
-        cbDepartamentos.setItems(departmentNames);
-        //Seleccionar un departamento por defecto
-        cbDepartamentos.getSelectionModel().select("Electrónica");
-        //Obtener valor seleccionado en la combo y moverlo a un campo de texto
-        //tfLogin.setText(cbDepartamentos.getValue().toString());
-        //Ocultar Select All
-        //ckSelectAll.setSelected(false);
-        ckSelectAll.setVisible(false);
-        //Seleccionar perfil usuario
-        tgPerfil.selectToggle(rbUsuario);
-        //Añadir manejador para eventos de foco
-        //tfLogin.focusedProperty().addListener(this::focusChanged);
-        //Establecer las factorías para los valores de celda de las columnas de
-        //la tabla
-        tbcolLogin.setCellValueFactory(
-                new PropertyValueFactory<>("login"));
-        tbcolDepartamento.setCellValueFactory(
-                new PropertyValueFactory<>("departamento"));
-        tbcolNombre.setCellValueFactory(
-                new PropertyValueFactory<>("nombre"));
-        tbcolPerfil.setCellValueFactory(
-                new PropertyValueFactory<>("perfil"));
-        //Crear una lista observable de Users para la tabla
         try{
-            usersData=FXCollections.observableArrayList(usersManager.getAllUsers());
+            //Establecer datos de la combo de departamentos
+            ObservableList<DepartmentBean> departments=
+                    FXCollections.observableArrayList(usersManager.getAllDepartments());
+            cbDepartamentos.setItems(departments);
+            //Seleccionar un departamento por defecto
+            //cbDepartamentos.getSelectionModel().select("Electrónica");
+            //Obtener valor seleccionado en la combo y moverlo a un campo de texto
+            //tfLogin.setText(cbDepartamentos.getValue().toString());
+            //Ocultar Select All
+            //ckSelectAll.setSelected(false);
+            ckSelectAll.setVisible(false);
+            //Seleccionar perfil usuario
+            tgPerfil.selectToggle(rbUsuario);
+            //Añadir manejador para eventos de foco
+            //tfLogin.focusedProperty().addListener(this::focusChanged);
+            //Establecer las factorías para los valores de celda de las columnas de
+            //la tabla
+            tbcolLogin.setCellValueFactory(
+                    new PropertyValueFactory<>("login"));
+            tbcolDepartamento.setCellValueFactory(
+                    new PropertyValueFactory<>("departamento"));
+            tbcolNombre.setCellValueFactory(
+                    new PropertyValueFactory<>("nombre"));
+            tbcolPerfil.setCellValueFactory(
+                    new PropertyValueFactory<>("perfil"));
+            //Crear una lista observable de Users para la tabla
+                usersData=FXCollections.observableArrayList(usersManager.getAllUsers());
         }catch(BusinessLogicException e){
             Alert alert=new Alert(Alert.AlertType.ERROR,
                             "No se ha podido abrir la ventana:"+
@@ -235,7 +234,7 @@ public class GestionUsuariosController{
             tfLogin.setText(user.getLogin());
             tfNombre.setText(user.getNombre());
             cbDepartamentos.getSelectionModel().select(user.getDepartamento());
-            if(user.getPerfil()==0)tgPerfil.selectToggle(rbAdmin);
+            if(user.getPerfil().equals(Profile.ADMIN))tgPerfil.selectToggle(rbAdmin);
             else tgPerfil.selectToggle(rbUsuario);
             btCrear.setDisable(false);
             btModificar.setDisable(false);
@@ -260,24 +259,30 @@ public class GestionUsuariosController{
         //Validar que no existe ya un usuario con el 
         //valor del campo login.
         try{
-            usersManager.isLoginExisting(tfLogin.getText().trim());
+            //TODO: think how to proccess in serverside ReadException thrown
+            //when login does not exist. Maybe map to 404 NotFoundException
+            //usersManager.isLoginExisting(tfLogin.getText().trim());
             //Si no existe, agregar un usuario con los datos de los campos, 
             //actualizar la tabla de usuarios, vaciar todos los campos y 
             //deshabilitar los botones Crear y Modificar
-            Integer iPerfil=1;
-            if(rbAdmin.isSelected())iPerfil=0;
-            tbUsers.getItems()
-                   .add(new UserBean(tfLogin.getText(),
+            Profile perfil=Profile.USER;
+            if(rbAdmin.isSelected())perfil=Profile.ADMIN;
+            //User to add
+            UserBean user=new UserBean(tfLogin.getText(),
                                  tfNombre.getText(),
-                                 iPerfil,
-                                 (String)cbDepartamentos.getSelectionModel().getSelectedItem()));
+                                 perfil,
+                                 (DepartmentBean)cbDepartamentos.getSelectionModel().getSelectedItem());
+            //add user to serverside
+            this.usersManager.createUser(user);
+            //add to TableView
+            tbUsers.getItems().add(user);
             tfLogin.setText("");
             tfNombre.setText("");
             cbDepartamentos.getSelectionModel().clearSelection();
             tgPerfil.selectToggle(rbUsuario);
             btCrear.setDisable(true);
             btModificar.setDisable(true);
-        }catch(LoginExistsException e){
+        }catch(BusinessLogicException e){
             Alert alert=new Alert(Alert.AlertType.ERROR,
                             e.getMessage(),
                             ButtonType.OK);
@@ -315,10 +320,10 @@ public class GestionUsuariosController{
         //Si no existe, modificar el usuario seleccionado en la tabla 
         //con los datos de los campos
         selectedUser.setNombre(tfNombre.getText().trim());
-        Integer iPerfil=1;
-        if(rbAdmin.isSelected())iPerfil=0;
-        selectedUser.setPerfil(iPerfil);
-        selectedUser.setDepartamento((String)cbDepartamentos.getSelectionModel()
+        Profile perfil=Profile.USER;
+        if(rbAdmin.isSelected())perfil=Profile.ADMIN;
+        selectedUser.setPerfil(perfil);
+        selectedUser.setDepartamento((DepartmentBean)cbDepartamentos.getSelectionModel()
                                                                 .getSelectedItem());
         tfLogin.setText("");
         tfNombre.setText("");

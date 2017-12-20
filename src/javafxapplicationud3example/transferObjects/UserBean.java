@@ -5,28 +5,39 @@
  */
 package javafxapplicationud3example.transferObjects;
 
-import javafx.beans.property.SimpleIntegerProperty;
+import java.io.Serializable;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Clase que encapsula los datos de un usuario para la transferencia entre UI y 
  * Bussiness Logic. Se usa además para el modelo de datos de la TableView de la UI.
  * @author Javier Martin Uria
  */
-public class UserBean {
+@XmlRootElement(name="user")
+public class UserBean implements Serializable {
     private final SimpleStringProperty login;
     private final SimpleStringProperty nombre;
-    private final SimpleIntegerProperty perfil;
-    private final SimpleStringProperty departamento;
+    private final SimpleObjectProperty<Profile> perfil;
+    private final SimpleObjectProperty<DepartmentBean> departamento;
+
+    public UserBean() {
+        this.login=new SimpleStringProperty();
+        this.nombre=new SimpleStringProperty();
+        this.perfil=new SimpleObjectProperty();
+        this.departamento=new SimpleObjectProperty();
+    }
     
     public UserBean(String login,
                     String nombre,
-                    Integer perfil,
-                    String departamento){
+                    Profile perfil,
+                    DepartmentBean departamento){
         this.login=new SimpleStringProperty(login);
         this.nombre=new SimpleStringProperty(nombre);
-        this.perfil=new SimpleIntegerProperty(perfil);
-        this.departamento=new SimpleStringProperty(departamento);
+        this.perfil=new SimpleObjectProperty(perfil);
+        this.departamento=new SimpleObjectProperty(departamento);
     }
     
     public String getLogin(){
@@ -35,23 +46,25 @@ public class UserBean {
     public void setLogin(String login){
         this.login.set(login);
     }
-
+    @XmlElement(name="name")
     public String getNombre(){
         return this.nombre.get();
     }
     public void setNombre(String nombre){
         this.nombre.set(nombre);
     }
-    public Integer getPerfil(){
+    @XmlElement(name="profile")
+    public Profile getPerfil(){
         return this.perfil.get();
     }
-    public void setPerfil(Integer perfil){
+    public void setPerfil(Profile perfil){
         this.perfil.set(perfil);
     }
-    public String getDepartamento(){
+    @XmlElement(name="department")
+    public DepartmentBean getDepartamento(){
         return this.departamento.get();
     }
-    public void setDepartamento(String departamento){
+    public void setDepartamento(DepartmentBean departamento){
         this.departamento.set(departamento);
     }
     

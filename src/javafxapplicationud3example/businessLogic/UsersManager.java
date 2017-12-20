@@ -6,6 +6,8 @@
 package javafxapplicationud3example.businessLogic;
 
 import java.util.Collection;
+import javafxapplicationud3example.transferObjects.DepartmentBean;
+import javafxapplicationud3example.transferObjects.UserBean;
 
 
 /**
@@ -14,7 +16,11 @@ import java.util.Collection;
  */
 public interface UsersManager {
     
-    public Collection getAllUsers() throws BusinessLogicException;
+    public Collection<UserBean> getAllUsers() throws BusinessLogicException;
+    public Collection<DepartmentBean> getAllDepartments() throws BusinessLogicException;
+    public void createUser(UserBean user) throws BusinessLogicException;
+    public void updateUser(UserBean user) throws BusinessLogicException;
+    public void deleteUser(UserBean user) throws BusinessLogicException;
     public void isLoginExisting(String login) throws LoginExistsException;
     
 }

@@ -8,10 +8,9 @@ package javafxapplicationud3example;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafxapplicationud3example.businessLogic.UsersManager;
-import javafxapplicationud3example.businessLogic.UsersManagerTestDataGenerator;
+import javafxapplicationud3example.businessLogic.UsersManagerImplementation;
 import javafxapplicationud3example.ui.controller.LoginController;
 
 /**
@@ -27,7 +26,7 @@ public class ApplicationUD3Example extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         //Create Bussines Logic Controller to be passed to UI controllers
-        UsersManager bussinessLogicController=new UsersManagerTestDataGenerator();
+        UsersManager bussinessLogicController=new UsersManagerImplementation();
         //Load node graph from fxml file
         FXMLLoader loader=new FXMLLoader(
                 getClass().getResource("ui/view/Login.fxml"));
