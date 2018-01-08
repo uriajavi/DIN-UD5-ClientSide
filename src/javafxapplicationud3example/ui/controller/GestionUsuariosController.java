@@ -259,9 +259,7 @@ public class GestionUsuariosController{
         //Validar que no existe ya un usuario con el 
         //valor del campo login.
         try{
-            //TODO: think how to proccess in serverside ReadException thrown
-            //when login does not exist. Maybe map to 404 NotFoundException
-            //usersManager.isLoginExisting(tfLogin.getText().trim());
+            usersManager.isLoginExisting(tfLogin.getText().trim());
             //Si no existe, agregar un usuario con los datos de los campos, 
             //actualizar la tabla de usuarios, vaciar todos los campos y 
             //deshabilitar los botones Crear y Modificar
@@ -295,60 +293,40 @@ public class GestionUsuariosController{
     }
     @FXML
     private void handleModificarAction(ActionEvent event){
-        //Obtener el elemento seleccionado de la tabla
-        UserBean selectedUser=((UserBean)tbUsers.getSelectionModel()
-                                                .getSelectedItem());
-        //Comprobar si el login de la fila seleccionada 
-        //coincide con el valor del campo login:
-        if(!selectedUser.getLogin().equals(tfLogin.getText())){
-            //Si no coincide Validar que no existe ya el login
-            try{
-                usersManager.isLoginExisting(tfLogin.getText().trim());
-                selectedUser.setLogin(tfLogin.getText().trim());
-            }catch(LoginExistsException e){
-                Alert alert=new Alert(Alert.AlertType.ERROR,
-                                e.getMessage(),
-                                ButtonType.OK);
-                alert.getDialogPane().getStylesheets().add(
-                getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
-                alert.showAndWait();
-                tfLogin.requestFocus();
-                tfLogin.setStyle("-fx-text-inner-color: red;");
-                return;
-            }            
-        }
-        //Si no existe, modificar el usuario seleccionado en la tabla 
-        //con los datos de los campos
-        selectedUser.setNombre(tfNombre.getText().trim());
-        Profile perfil=Profile.USER;
-        if(rbAdmin.isSelected())perfil=Profile.ADMIN;
-        selectedUser.setPerfil(perfil);
-        selectedUser.setDepartamento((DepartmentBean)cbDepartamentos.getSelectionModel()
-                                                                .getSelectedItem());
-        tfLogin.setText("");
-        tfNombre.setText("");
-        cbDepartamentos.getSelectionModel().clearSelection();
-        tgPerfil.selectToggle(rbUsuario);
-        btCrear.setDisable(true);
-        btModificar.setDisable(true);
-        //Deseleccionamos la fila seleccionada en la tabla
-        tbUsers.getSelectionModel().clearSelection();
-        //Refrescamos la tabla para que muestre los nuevos datos
-        tbUsers.refresh();
-    }
-    @FXML
-    private void handleEliminarAction(ActionEvent event){
-        //Pedir confirmación para eliminar la fila seleccionada
-        Alert alert=new Alert(Alert.AlertType.CONFIRMATION,
-                                "¿Borrar la fila seleccionada?\n"
-                                + "Esta operación no se puede deshacer.",
-                                ButtonType.OK,ButtonType.CANCEL);
-        alert.getDialogPane().getStylesheets().add(
-                getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-             tbUsers.getItems().remove(tbUsers.getSelectionModel().getSelectedItem());
-             tbUsers.refresh();
+        try{
+            //Obtener el elemento seleccionado de la tabla
+            UserBean selectedUser=((UserBean)tbUsers.getSelectionModel()
+                                                    .getSelectedItem());
+            //Comprobar si el login de la fila seleccionada 
+            //coincide con el valor del campo login:
+            if(!selectedUser.getLogin().equals(tfLogin.getText())){
+                //Si no coincide Validar que no existe ya el login
+                try{
+                    usersManager.isLoginExisting(tfLogin.getText().trim());
+                    selectedUser.setLogin(tfLogin.getText().trim());
+                }catch(LoginExistsException e){
+                    Alert alert=new Alert(Alert.AlertType.ERROR,
+                                    e.getMessage(),
+                                    ButtonType.OK);
+                    alert.getDialogPane().getStylesheets().add(
+                    getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
+                    alert.showAndWait();
+                    tfLogin.requestFocus();
+                    tfLogin.setStyle("-fx-text-inner-color: red;");
+                    return;
+                }            
+            }
+            //Si no existe, modificar el usuario seleccionado en la tabla 
+            //con los datos de los campos
+            selectedUser.setNombre(tfNombre.getText().trim());
+            Profile perfil=Profile.USER;
+            if(rbAdmin.isSelected())perfil=Profile.ADMIN;
+            selectedUser.setPerfil(perfil);
+            selectedUser.setDepartamento((DepartmentBean)cbDepartamentos.getSelectionModel()
+                                                                    .getSelectedItem());
+            //modify user in serverside
+            this.usersManager.updateUser(selectedUser);
+            //Clean editing fields
             tfLogin.setText("");
             tfNombre.setText("");
             cbDepartamentos.getSelectionModel().clearSelection();
@@ -359,6 +337,55 @@ public class GestionUsuariosController{
             tbUsers.getSelectionModel().clearSelection();
             //Refrescamos la tabla para que muestre los nuevos datos
             tbUsers.refresh();
+        }catch(BusinessLogicException e){
+            Alert alert=new Alert(Alert.AlertType.ERROR,
+                            e.getMessage(),
+                            ButtonType.OK);
+            alert.getDialogPane().getStylesheets().add(
+            getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
+            alert.showAndWait();
+        }
+    }
+    @FXML
+    private void handleEliminarAction(ActionEvent event){
+        //Obtener el elemento seleccionado de la tabla
+        UserBean selectedUser=((UserBean)tbUsers.getSelectionModel()
+                                                    .getSelectedItem());
+        //Pedir confirmación para eliminar la fila seleccionada
+        Alert alert=new Alert(Alert.AlertType.CONFIRMATION,
+                                "¿Borrar la fila seleccionada?\n"
+                                + "Esta operación no se puede deshacer.",
+                                ButtonType.OK,ButtonType.CANCEL);
+        alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
+        Optional<ButtonType> result = alert.showAndWait();
+        //If OK to deletion
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try{
+                //delete user from server side
+                this.usersManager.deleteUser(selectedUser);
+                //removes selected item from table
+                tbUsers.getItems().remove(selectedUser);
+                tbUsers.refresh();
+                //clears editing fields
+                tfLogin.setText("");
+                tfNombre.setText("");
+                cbDepartamentos.getSelectionModel().clearSelection();
+                tgPerfil.selectToggle(rbUsuario);
+                btCrear.setDisable(true);
+                btModificar.setDisable(true);
+                //Deseleccionamos la fila seleccionada en la tabla
+                tbUsers.getSelectionModel().clearSelection();
+                //Refrescamos la tabla para que muestre los nuevos datos
+                tbUsers.refresh();
+            }catch(BusinessLogicException e){
+                alert=new Alert(Alert.AlertType.ERROR,
+                                e.getMessage(),
+                                ButtonType.OK);
+                alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
+                alert.showAndWait();
+            }
         }
     }
     @FXML

@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 import javafxapplicationud3example.rest.UserRESTClient;
 import javafxapplicationud3example.transferObjects.DepartmentBean;
 import javafxapplicationud3example.transferObjects.UserBean;
+import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.GenericType;
 
 /**
@@ -49,8 +51,13 @@ public class UsersManagerImplementation implements UsersManager{
 
     @Override
     public void isLoginExisting(String login) throws LoginExistsException {
-        if(this.webClient.find_XML(UserBean.class, login)!=null)
-            throw new LoginExistsException("Ya existe un usuario con ese login");
+        try{
+            if(this.webClient.find_XML(UserBean.class, login)!=null)
+                throw new LoginExistsException("Ya existe un usuario con ese login");
+        }catch(NotFoundException ex){
+            //If there is a NotFoundException 404,that is,
+            //the login does not exist, we catch the exception and do nothing. 
+        }    
     }
 
     @Override
@@ -61,12 +68,14 @@ public class UsersManagerImplementation implements UsersManager{
 
     @Override
     public void updateUser(UserBean user) throws BusinessLogicException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        LOGGER.log(Level.INFO,"UsersManager: Updating user {0}.",user.getLogin());
+        webClient.update_XML(user);
     }
 
     @Override
     public void deleteUser(UserBean user) throws BusinessLogicException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        LOGGER.log(Level.INFO,"UsersManager: Deleting user {0}.",user.getLogin());
+        webClient.delete(user.getLogin());
     }
 
     
