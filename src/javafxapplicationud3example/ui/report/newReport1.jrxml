@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f5ede580-789e-483d-aa7f-7fc97f683ba1">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="login" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="departamento.name" class="java.lang.String"/>
+	<field name="perfil" class="javafxapplicationud3example.transferObjects.Profile"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="222" y="31" width="100" height="20" uuid="4795ddc7-9d6f-48fc-97a5-49f6cdd950f4"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Report Test]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement x="134" y="0" width="100" height="20" uuid="425fa71e-a67f-4289-8c48-996d0c27bc19"/>
+				<textElement>
+					<font isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[NAME]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="20" uuid="3c57bfdd-630f-44d9-aa2a-4aea0c3acea5"/>
+				<textElement>
+					<font isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[LOGIN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="309" y="0" width="100" height="20" uuid="34dffb49-c56b-4b27-8766-22206c041df8"/>
+				<textElement>
+					<font isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[PROFILE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="433" y="0" width="100" height="20" uuid="219e03ad-721d-4e91-9e21-e6b83c4f8775"/>
+				<textElement>
+					<font isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[DEPARTMENT]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="134" y="0" width="100" height="20" uuid="004ba695-3586-48ac-b96f-995ff80539ba"/>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="100" height="20" uuid="30fd4ab3-64ee-4442-8ee6-ea06053af4d4"/>
+				<textFieldExpression><![CDATA[$F{login}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="433" y="1" width="100" height="20" uuid="d4af3256-21c4-49d2-a8f5-f641076490f1"/>
+				<textFieldExpression><![CDATA[$F{departamento.name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="309" y="0" width="100" height="20" uuid="1befe05c-85f7-4475-8ac3-ddf4012902e6"/>
+				<textFieldExpression><![CDATA[$F{perfil}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

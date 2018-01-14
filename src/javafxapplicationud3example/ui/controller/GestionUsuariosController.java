@@ -5,7 +5,11 @@
  */
 package javafxapplicationud3example.ui.controller;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Vector;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
@@ -35,6 +39,15 @@ import javafxapplicationud3example.businessLogic.LoginExistsException;
 import javafxapplicationud3example.transferObjects.DepartmentBean;
 import javafxapplicationud3example.transferObjects.Profile;
 import javafxapplicationud3example.transferObjects.UserBean;
+import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.data.JRTableModelDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  * Clase que define los manejadores de eventos de la interfaz definida mediante
@@ -386,6 +399,34 @@ public class GestionUsuariosController{
                 getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
                 alert.showAndWait();
             }
+        }
+    }
+    @FXML
+    private void handleImprimirAction(ActionEvent event){
+        //JasperPrint jasperPrint = null;
+        try {
+            //JasperCompileManager.compileReportToFile("reports/report1.jrxml");
+            JasperReport report=
+                    JasperCompileManager.compileReport("src/javafxapplicationud3example/ui/report/newReport1.jrxml");
+            //Data for the report: a collection of UserBean passed as a JRDataSource 
+            //implementation 
+            JRBeanCollectionDataSource dataItems=
+                    new JRBeanCollectionDataSource((Collection<UserBean>)this.tbUsers.getItems());
+            //Map of parameter to be passed to the report
+            Map<String,Object> parameters=new HashMap<>();
+            //parameters.put("ItemDataSource",dataItems);
+            //Fill report with data
+            JasperPrint jasperPrint = JasperFillManager.fillReport(report,parameters,dataItems);
+            //Create and show the report window.
+            JasperViewer jasperViewer = new JasperViewer(jasperPrint);
+            jasperViewer.setVisible(true);
+        } catch (JRException ex) {
+                Alert alert=new Alert(Alert.AlertType.ERROR,
+                                ex.getMessage(),
+                                ButtonType.OK);
+                alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
+                alert.showAndWait();
         }
     }
     @FXML
