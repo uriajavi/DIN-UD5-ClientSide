@@ -5,6 +5,7 @@
  */
 package javafxapplicationud3example.ui.controller;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -68,8 +70,6 @@ public class GestionUsuariosController{
     private TextField tfLogin;
     @FXML
     private TextField tfNombre;
-    @FXML
-    private CheckBox ckSelectAll;
     @FXML
     private RadioButton rbUsuario;
     @FXML
@@ -139,11 +139,6 @@ public class GestionUsuariosController{
             cbDepartamentos.setItems(departments);
             //Seleccionar un departamento por defecto
             //cbDepartamentos.getSelectionModel().select("Electrónica");
-            //Obtener valor seleccionado en la combo y moverlo a un campo de texto
-            //tfLogin.setText(cbDepartamentos.getValue().toString());
-            //Ocultar Select All
-            //ckSelectAll.setSelected(false);
-            ckSelectAll.setVisible(false);
             //Seleccionar perfil usuario
             tgPerfil.selectToggle(rbUsuario);
             //Añadir manejador para eventos de foco
@@ -403,18 +398,16 @@ public class GestionUsuariosController{
     }
     @FXML
     private void handleImprimirAction(ActionEvent event){
-        //JasperPrint jasperPrint = null;
         try {
-            //JasperCompileManager.compileReportToFile("reports/report1.jrxml");
             JasperReport report=
-                    JasperCompileManager.compileReport("src/javafxapplicationud3example/ui/report/newReport1.jrxml");
+                JasperCompileManager.compileReport(getClass()
+                    .getResourceAsStream("/javafxapplicationud3example/ui/report/newReport1.jrxml"));
             //Data for the report: a collection of UserBean passed as a JRDataSource 
             //implementation 
             JRBeanCollectionDataSource dataItems=
                     new JRBeanCollectionDataSource((Collection<UserBean>)this.tbUsers.getItems());
             //Map of parameter to be passed to the report
             Map<String,Object> parameters=new HashMap<>();
-            //parameters.put("ItemDataSource",dataItems);
             //Fill report with data
             JasperPrint jasperPrint = JasperFillManager.fillReport(report,parameters,dataItems);
             //Create and show the report window.
@@ -429,6 +422,28 @@ public class GestionUsuariosController{
                 alert.showAndWait();
         }
     }
+    @FXML
+    private void handleHelpAction(ActionEvent event){
+        try{
+            //Load node graph from fxml file
+            FXMLLoader loader=
+                new FXMLLoader(getClass().getResource("/javafxapplicationud3example/ui/view/Help.fxml"));
+                Parent root = (Parent)loader.load();
+                HelpController helpController=
+                        ((HelpController)loader.getController());
+                //Initializes and shows help stage
+                helpController.initAndShowStage(root);
+            }catch(IOException ex){
+                Alert alert=new Alert(Alert.AlertType.ERROR,
+                                      "No se ha podido abrir la ventana:"+
+                                       ex.getMessage(),
+                                       ButtonType.OK);
+                alert.getDialogPane().getStylesheets().add(
+                    getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
+                alert.showAndWait();
+            }
+
+    }    
     @FXML
     private void handleSalirAction(ActionEvent event){
         //Se cierra la aplicación
