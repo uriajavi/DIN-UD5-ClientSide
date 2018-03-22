@@ -6,6 +6,7 @@
 package javafxapplicationud3example.ui.controller;
 
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -24,31 +25,63 @@ import javafx.stage.WindowEvent;
 import javafxapplicationud3example.businessLogic.UsersManager;
 
 /**
- * Clase que define los manejadores de eventos de la interfaz definida mediante
- * el archivo Login.fmxl: una UI para login mediante autenticación básica. 
- * @author Javier Martín Uría
+ * Controller UI class for Login view in users' management application. It contains 
+ * event handlers and initialization code for the view defined in Login.fxml file.
+ * @author javi
  */
 public class LoginController {
-    private static final Logger logger=Logger.getLogger("javafxapplicationud3example.ui.controller");
+    /**
+     * Logger object used to log messages for application.
+     */
+    private static final Logger LOGGER=Logger.getLogger("javafxapplicationud3example.ui.controller");
+    /**
+     * Maximum text fields length.
+     */
+    private final int MAX_LENGTH=255;
+   /**
+    * User's login name UI text field.
+    */
     @FXML
     private TextField tfUsuario;
+    /**
+    * User's password value UI entry field.
+    */
     @FXML
     private TextField tfPassword;
+    /**
+     * Button to fire action to log in at the UI.
+     */
     @FXML
     private Button btAceptar;
-    //Referencia para el objeto de la capa de lógica de negocio
+    /**
+     * The business logic object containing all business methods.
+     */
     private UsersManager usersManager;
-
+    /**
+     * Sets the business logic object to be used by this UI controller. 
+     * @param usersManager An object implementing {@link UsersManager} interface.
+     */
     public void setUsersManager(UsersManager usersManager){
         this.usersManager=usersManager;
     }
-
+    /**
+     * The Stage object associated to the Scene controlled by this controller.
+     * This is an utility method reference that provides quick access inside the 
+     * controller to the Stage object in order to make its initialization. Note 
+     * that this makes Application, Controller and Stage being tightly coupled.
+     */
     private Stage stage;
-    
+    /**
+     * Gets the Stage object related to this controller.
+     * @return The Stage object initialized by this controller.
+     */
     public Stage getStage(){
         return stage;
     }
-    
+    /**
+     * Sets the Stage object related to this controller. 
+     * @param stage The Stage object to be initialized.
+     */
     public void setStage(Stage stage){
         this.stage=stage;
     }
@@ -57,7 +90,7 @@ public class LoginController {
      * @param root The Parent object representing root node of view graph.
      */
     public void initStage(Parent root) {
-        logger.info("Initializing Login stage.");
+        LOGGER.info("Initializing Login stage.");
         //Create a scene associated to the node graph root.
         Scene scene = new Scene(root);
         //Associate scene to primaryStage(Window)
@@ -67,8 +100,6 @@ public class LoginController {
         stage.setResizable(false);
         //Set window's events handlers
         stage.setOnShowing(this::handleWindowShowing);
-        //tfPassword.addEventHandler(InputMethodEvent.INPUT_METHOD_TEXT_CHANGED, this::handleTextChanged);
-        //tfPassword.setOnKeyTyped(this::handleTextChanged);
         //Set control events handlers (if not set by FXML)
         tfUsuario.textProperty().addListener(this::textChanged);
         tfPassword.textProperty().addListener(this::textChanged);
@@ -76,47 +107,39 @@ public class LoginController {
         stage.show();
     }
     /**
-     * Initializes window state. It implements behavior for WINDOW_SHOWING type 
+     * Window event method handler. It implements behavior for WINDOW_SHOWING type 
      * event.
      * @param event  The window event 
      */
     private void handleWindowShowing(WindowEvent event){
-        logger.info("Beginning LoginController::handleWindowShowing");
-        //El botón Aceptar se deshabilita
+        LOGGER.info("Beginning LoginController::handleWindowShowing");
+        //Aceptar button is disabled.
         btAceptar.setDisable(true);
-        //Establecer prompt text
+        //Set all prompt texts.
         tfUsuario.setPromptText("Introduzca su id...");
         tfPassword.setPromptText("Introduzca su contraseña...");
-        //Establecer tooltip para btAceptar
+        //Set tooltip for btAceptar
         btAceptar.setTooltip(
                 new Tooltip("Pulse para validar credenciales"));
         btAceptar.setMnemonicParsing(true);
         btAceptar.setText("_Aceptar");
-        
     }
     /**
-     * Manejador de evento de pulsación sobre el botón de Aceptar. Valida que el 
-     * usuario y la contraseña están informados. Si no lo están muestra un mensaje 
-     * informativo al usuario. Si lo están muestra la ventana definida en 
-     * GestionUsuarios.fxml. 
-     * @param event El evento Action producido 
+     * Action event handler for Aceptar button. It validates that user and password
+     * fields are filled. If they are not, an error message dialog is shown. 
+     * Otherwise the users' data managing window is opened.
+     * @param event The Action event 
      */
     @FXML
     private void handleButtonAceptarAction(ActionEvent event) {
-        logger.info("Aceptar Action event.");
-        //Valida que el usuario y la contraseña están informados
+        //Validates user and password fields.
         if(this.tfUsuario.getText().trim().equals("")||
            this.tfPassword.getText().trim().equals("")){
-            //Si no están informados muestro mensaje de error
-            Alert alert=new Alert(AlertType.ERROR,
-                                  "Los campos usuario y contraseña \n deben estar informados",
-                                   ButtonType.OK);
-            alert.getDialogPane().getStylesheets().add(
-                    getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
-            alert.showAndWait();
+            //Shows error dialog.
+            showErrorAlert("Los campos usuario y contraseña \n deben estar informados");
         }
         else{
-            //Si lo están muestra la ventana definida en GestionUsuarios.fxml
+            //Shows view from GestionUsuarios.fxml
             try{
                 //Load node graph from fxml file
                 FXMLLoader loader=
@@ -130,30 +153,52 @@ public class LoginController {
                 controller.initStage(root);
                 //hides login stage
                 stage.hide();
-            }catch(IOException ex){
-                Alert alert=new Alert(AlertType.ERROR,
-                                      "No se ha podido abrir la ventana:"+
-                                       ex.getMessage(),
-                                       ButtonType.OK);
-                alert.getDialogPane().getStylesheets().add(
-                    getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
-                alert.showAndWait();
+            }catch(Exception ex){
+                showErrorAlert("No se ha podido abrir la ventana:\n"+
+                                       ex.getLocalizedMessage());
+                LOGGER.log(Level.SEVERE,
+                        "UI LoginController: Error opening users managing window: {0}",
+                        ex.getMessage());
             }
         }
     }
     /**
-     * Manejador de evento de cambio de texto. Valida que el 
-     * usuario y la contraseña están informados. Si no lo están deshabilita el 
-     * botón Aceptar. Si están informados habilita el botón.
-     * @param event El evento de método de entrada (InputMethodEvent) producido 
+     * Text changed event handler. It validates that user and password fields 
+     * has any content to enable/disable Aceptar button.
+     * @param observable The value being observed.
+     * @param oldValue The old value of the observable.
+     * @param newValue The new value of the observable.
      */
     private void textChanged(ObservableValue observable,
              String oldValue,
              String newValue){
-        if(tfUsuario.getText().trim().isEmpty()||
-           tfPassword.getText().trim().isEmpty())
+        //If text fields values are too long, show error message and disable 
+        //accept button
+        if(tfUsuario.getText().trim().length()>this.MAX_LENGTH ||
+           tfPassword.getText().trim().length()>this.MAX_LENGTH){
+            showErrorAlert("La longitud máxima del campo es de 255 caracteres.");
             btAceptar.setDisable(true);
+        }
+        //If text fields are empty disable accept buttton
+        else if(tfUsuario.getText().trim().isEmpty()||
+                tfPassword.getText().trim().isEmpty())
+            btAceptar.setDisable(true);
+        //Else, enable accept button
         else btAceptar.setDisable(false);
+        
+    }
+    /**
+     * Shows an error message in an alert dialog.
+     * @param errorMsg The error message to be shown.
+     */
+    private void showErrorAlert(String errorMsg){
+        //Shows error dialog.
+        Alert alert=new Alert(AlertType.ERROR,
+                              errorMsg,
+                              ButtonType.OK);
+        alert.getDialogPane().getStylesheets().add(
+              getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
+        alert.showAndWait();
         
     }
 }

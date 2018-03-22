@@ -9,7 +9,7 @@ import java.io.Serializable;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * Data Transfer Object used in UI and client side for representing Department entity.
  * @author javi
  */
 @XmlRootElement(name="department")

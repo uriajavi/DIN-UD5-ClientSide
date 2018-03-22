@@ -12,9 +12,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Clase que encapsula los datos de un usuario para la transferencia entre UI y 
- * Bussiness Logic. Se usa además para el modelo de datos de la TableView de la UI.
- * @author Javier Martin Uria
+ * Data Transfer Object used in UI and client side for representing User entity.
+ * It is also used as data model for a TableView in the UI.
+ * @author javi
  */
 @XmlRootElement(name="user")
 public class UserBean implements Serializable {

@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Vector;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
@@ -24,7 +23,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
@@ -41,23 +39,22 @@ import javafxapplicationud3example.businessLogic.LoginExistsException;
 import javafxapplicationud3example.transferObjects.DepartmentBean;
 import javafxapplicationud3example.transferObjects.Profile;
 import javafxapplicationud3example.transferObjects.UserBean;
-import javax.swing.table.DefaultTableModel;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.data.JRTableModelDataSource;
 import net.sf.jasperreports.view.JasperViewer;
 
 /**
- * Clase que define los manejadores de eventos de la interfaz definida mediante
- * el archivo GestionUsuarios.fmxl: una UI para mantenimiento de datos de usuarios. 
+ * Controller class for users' management view . 
+ * It contains event handlers and initialization code for the view defined in 
+ * GestionUsuarios.fmxl file.
  * @author Javier Martín Uría
  */
 public class GestionUsuariosController{
-    private static final Logger logger=Logger.getLogger("javafxapplicationud3example.ui.controller");
+    private static final Logger LOGGER=Logger.getLogger("javafxapplicationud3example.ui.controller");
     @FXML
     private Button btCrear;
     @FXML
@@ -111,28 +108,19 @@ public class GestionUsuariosController{
      * @param root The Parent object representing root node of view graph.
      */
     public void initStage(Parent root) {
-        Scene scene = new Scene(root);
-        stage = new Stage();
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setScene(scene);
-        stage.setTitle("Gestion de Usuarios");
-        stage.setResizable(false);
-        stage.setOnShowing(this::handleWindowShowing);
-        tfLogin.textProperty().addListener(this::handleTextChanged);
-        tfNombre.textProperty().addListener(this::handleTextChanged);
-        tbUsers.getSelectionModel().selectedItemProperty()
-                .addListener(this::handleUsersTableSelectionChanged);
-        stage.show();
-    }
-    
-    /**
-     * Initializes window state. It implements behavior for WINDOW_SHOWING type 
-     * event.
-     * @param event  The window event 
-     */
-    private void handleWindowShowing(WindowEvent event){
-        logger.info("Beginning GestionUsuariosController::handleWindowShowing");
         try{
+            Scene scene = new Scene(root);
+            stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(scene);
+            stage.setTitle("Gestion de Usuarios");
+            stage.setResizable(false);
+            stage.setOnShowing(this::handleWindowShowing);
+            tfLogin.textProperty().addListener(this::handleTextChanged);
+            tfNombre.textProperty().addListener(this::handleTextChanged);
+            tbUsers.getSelectionModel().selectedItemProperty()
+                    .addListener(this::handleUsersTableSelectionChanged);
+ 
             //Establecer datos de la combo de departamentos
             ObservableList<DepartmentBean> departments=
                     FXCollections.observableArrayList(usersManager.getAllDepartments());
@@ -155,39 +143,49 @@ public class GestionUsuariosController{
                     new PropertyValueFactory<>("perfil"));
             //Crear una lista observable de Users para la tabla
                 usersData=FXCollections.observableArrayList(usersManager.getAllUsers());
+            //Establecer el modelo de datos de la tabla
+            tbUsers.setItems(usersData);
+            stage.show();
         }catch(BusinessLogicException e){
             Alert alert=new Alert(Alert.AlertType.ERROR,
-                            "No se ha podido abrir la ventana:"+
+                            "No se ha podido abrir la ventana.\n"+
                             e.getMessage(),
                             ButtonType.OK);
             alert.getDialogPane().getStylesheets().add(
             getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
             alert.showAndWait();
+            //stage.close();
         }
-        //Establecer el modelo de datos de la tabla
-        tbUsers.setItems(usersData);
-        //Los botones Crear, Modificar y Eliminar se 
-        //deshabilitan.
-        btCrear.setDisable(true);
-        btModificar.setDisable(true);
-        btEliminar.setDisable(true);
-        //Establecemos el propmt text de los campos login y nombre
-        tfLogin.setPromptText("Introduzca un id...");
-        tfNombre.setPromptText("Introduzca nombre y apellidos...");
-        //Se enfoca el campo login
-        tfLogin.requestFocus();
-        
     }
+    
     /**
+     * Initializes window state. It implements behavior for WINDOW_SHOWING type 
+     * event.
+     * @param event  The window event 
+     */
+    private void handleWindowShowing(WindowEvent event){
+        LOGGER.info("Beginning GestionUsuariosController::handleWindowShowing");
+            //Los botones Crear, Modificar y Eliminar se 
+            //deshabilitan.
+            btCrear.setDisable(true);
+            btModificar.setDisable(true);
+            btEliminar.setDisable(true);
+            //Establecemos el propmt text de los campos login y nombre
+            tfLogin.setPromptText("Introduzca un id...");
+            tfNombre.setPromptText("Introduzca nombre y apellidos...");
+            //Se enfoca el campo login
+            tfLogin.requestFocus();
+    }
+    /*
      * Manejador de evento para un cambio de foco.
      */
     private void focusChanged(ObservableValue observable,
              Boolean oldValue,
              Boolean newValue){
         if(newValue)
-            logger.info("onFocus");
+            LOGGER.info("onFocus");
         else if(oldValue)
-            logger.info("onBlur");
+            LOGGER.info("onBlur");
     }
     /**
      * Manejador de los cambios de texto en los campos de Login y Nombre.
@@ -356,20 +354,21 @@ public class GestionUsuariosController{
     }
     @FXML
     private void handleEliminarAction(ActionEvent event){
-        //Obtener el elemento seleccionado de la tabla
-        UserBean selectedUser=((UserBean)tbUsers.getSelectionModel()
-                                                    .getSelectedItem());
-        //Pedir confirmación para eliminar la fila seleccionada
-        Alert alert=new Alert(Alert.AlertType.CONFIRMATION,
-                                "¿Borrar la fila seleccionada?\n"
-                                + "Esta operación no se puede deshacer.",
-                                ButtonType.OK,ButtonType.CANCEL);
-        alert.getDialogPane().getStylesheets().add(
-                getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
-        Optional<ButtonType> result = alert.showAndWait();
-        //If OK to deletion
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            try{
+        Alert alert=null;
+        try{
+            //Obtener el elemento seleccionado de la tabla
+            UserBean selectedUser=((UserBean)tbUsers.getSelectionModel()
+                                                        .getSelectedItem());
+            //Pedir confirmación para eliminar la fila seleccionada
+            alert=new Alert(Alert.AlertType.CONFIRMATION,
+                                    "¿Borrar la fila seleccionada?\n"
+                                    + "Esta operación no se puede deshacer.",
+                                    ButtonType.OK,ButtonType.CANCEL);
+            alert.getDialogPane().getStylesheets().add(
+                    getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
+            Optional<ButtonType> result = alert.showAndWait();
+            //If OK to deletion
+            if (result.isPresent() && result.get() == ButtonType.OK) {
                 //delete user from server side
                 this.usersManager.deleteUser(selectedUser);
                 //removes selected item from table
@@ -386,14 +385,14 @@ public class GestionUsuariosController{
                 tbUsers.getSelectionModel().clearSelection();
                 //Refrescamos la tabla para que muestre los nuevos datos
                 tbUsers.refresh();
-            }catch(BusinessLogicException e){
-                alert=new Alert(Alert.AlertType.ERROR,
+                }
+        }catch(BusinessLogicException e){
+            alert=new Alert(Alert.AlertType.ERROR,
                                 e.getMessage(),
                                 ButtonType.OK);
-                alert.getDialogPane().getStylesheets().add(
-                getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
-                alert.showAndWait();
-            }
+            alert.getDialogPane().getStylesheets().add(
+            getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
+            alert.showAndWait();
         }
     }
     @FXML

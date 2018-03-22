@@ -10,23 +10,30 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 import javafxapplicationud3example.businessLogic.UsersManager;
-import javafxapplicationud3example.businessLogic.UsersManagerImplementation;
+import javafxapplicationud3example.businessLogic.UsersManagerFactory;
+import static javafxapplicationud3example.businessLogic.UsersManagerFactory.REST_WEB_CLIENT_TYPE;
+import static javafxapplicationud3example.businessLogic.UsersManagerFactory.TEST_MOCK_TYPE;
 import javafxapplicationud3example.ui.controller.LoginController;
 
 /**
- * Application class for UI example.
+ * Application class for UI example. Entry point for the JavaFX application.
  * @author javi
  */
 public class ApplicationUD3Example extends Application {
     /**
-     * Entry point for the application. Loads, sets and shows primary window.
+     * Entry point for the JavaFX application. Loads, sets and shows primary window.
+     * It also uses a factory to get a business logic object to be passed to views.
      * @param primaryStage The primary window of the application
      * @throws Exception 
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
         //Create Bussines Logic Controller to be passed to UI controllers
-        UsersManager bussinessLogicController=new UsersManagerImplementation();
+        UsersManager bussinessLogicController=
+                UsersManagerFactory.createUsersManager(REST_WEB_CLIENT_TYPE);
+        //Uncomment this sentence if you want fake data for testing the UI 
+        //bussinessLogicController=
+        //        UsersManagerFactory.createUsersManager(TEST_MOCK_TYPE);
         //Load node graph from fxml file
         FXMLLoader loader=new FXMLLoader(
                 getClass().getResource("ui/view/Login.fxml"));
@@ -43,6 +50,7 @@ public class ApplicationUD3Example extends Application {
     }
 
     /**
+     * Entry point for the Java application.
      * @param args the command line arguments
      */
     public static void main(String[] args) {

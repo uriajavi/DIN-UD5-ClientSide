@@ -6,7 +6,7 @@
 package javafxapplicationud3example.businessLogic;
 
 /**
- * Excepción que indica un error no concretado en la capa de lógica. 
+ * Exception associated to an error produced in the business logic tier.
  * @author javi
  */
 public class BusinessLogicException extends Exception {

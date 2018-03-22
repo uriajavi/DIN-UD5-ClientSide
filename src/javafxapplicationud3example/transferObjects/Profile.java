@@ -6,10 +6,16 @@
 package javafxapplicationud3example.transferObjects;
 
 /**
- * This enumeration is for users profiles. Includes the values USER and ADMIN
+ * This enumeration is for users profiles. Includes the values USER and ADMIN.
  * @author javi
  */
 public enum Profile {
+    /**
+     * The user is a regular user.
+     */
     USER,
+    /**
+     * The user is a privileged user.
+     */
     ADMIN;
 }
