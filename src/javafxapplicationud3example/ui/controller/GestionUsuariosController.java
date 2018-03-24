@@ -448,19 +448,4 @@ public class GestionUsuariosController{
         //Se cierra la aplicación
         Platform.exit();
     }
-    /**
-     * Shows an error message in an alert dialog.
-     * @param errorMsg The error message to be shown.
-     */
-    private void showErrorAlert(String errorMsg){
-        //Shows error dialog.
-        Alert alert=new Alert(Alert.AlertType.ERROR,
-                              errorMsg,
-                              ButtonType.OK);
-        alert.getDialogPane().getStylesheets().add(
-              getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
-        alert.showAndWait();
-        
-    }
-
 }
