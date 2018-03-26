@@ -45,9 +45,9 @@ import javax.ws.rs.core.GenericType;
             LOGGER.info("UsersManager: Finding all users from REST service (XML).");
             //Ask webClient for all users' data.
             users = webClient.findAll_XML(new GenericType<List<UserBean>>() {});
-        }catch(WebApplicationException ex){
+        }catch(Exception ex){
             LOGGER.log(Level.SEVERE,
-                    "UsersManager: WebApplicationException finding all users, {0}",
+                    "UsersManager: Exception finding all users, {0}",
                     ex.getMessage());
             throw new BusinessLogicException("Error finding all users:\n"+ex.getMessage());
         }
@@ -66,9 +66,9 @@ import javax.ws.rs.core.GenericType;
             //Ask webClient for all departments' data.
             departments = 
                 webClient.findAllDeps_XML(new GenericType<List<DepartmentBean>>() {});
-        }catch(WebApplicationException ex){
+        }catch(Exception ex){
             LOGGER.log(Level.SEVERE,
-                    "UsersManager: WebApplicationException finding all departments, {0}",
+                    "UsersManager: Exception finding all departments, {0}",
                     ex.getMessage());
             throw new BusinessLogicException("Error finding all departments:\n"+ex.getMessage());
         }
@@ -80,14 +80,19 @@ import javax.ws.rs.core.GenericType;
      * @throws LoginExistsException The Exception thrown in case login already exists
      */
     @Override
-    public void isLoginExisting(String login) throws LoginExistsException {
+    public void isLoginExisting(String login) throws LoginExistsException,BusinessLogicException {
         try{
             if(this.webClient.find_XML(UserBean.class, login)!=null)
                 throw new LoginExistsException("Ya existe un usuario con ese login");
         }catch(NotFoundException ex){
             //If there is a NotFoundException 404,that is,
             //the login does not exist, we catch the exception and do nothing. 
-        }    
+        }catch(Exception ex){
+            LOGGER.log(Level.SEVERE,
+                    "UsersManager: Exception checking login exixtence, {0}",
+                    ex.getMessage());
+            throw new BusinessLogicException("Error finding user:\n"+ex.getMessage());
+        }
     }
     /**
      * This method adds a new created UserBean. This is done by sending a POST 
@@ -101,9 +106,9 @@ import javax.ws.rs.core.GenericType;
             LOGGER.log(Level.INFO,"UsersManager: Creating user {0}.",user.getLogin());
             //Send user data to web client for creation. 
             webClient.create_XML(user);
-        }catch(WebApplicationException ex){
+        }catch(Exception ex){
             LOGGER.log(Level.SEVERE,
-                    "UsersManager: WebApplicationException creating user, {0}",
+                    "UsersManager: Exception creating user, {0}",
                     ex.getMessage());
             throw new BusinessLogicException("Error creating user:\n"+ex.getMessage());
         }
@@ -119,9 +124,9 @@ import javax.ws.rs.core.GenericType;
         try{
             LOGGER.log(Level.INFO,"UsersManager: Updating user {0}.",user.getLogin());
             webClient.update_XML(user);
-        }catch(WebApplicationException ex){
+        }catch(Exception ex){
             LOGGER.log(Level.SEVERE,
-                    "UsersManager: WebApplicationException updating user, {0}",
+                    "UsersManager: Exception updating user, {0}",
                     ex.getMessage());
             throw new BusinessLogicException("Error updating user:\n"+ex.getMessage());
         }
@@ -137,9 +142,9 @@ import javax.ws.rs.core.GenericType;
         try{
             LOGGER.log(Level.INFO,"UsersManager: Deleting user {0}.",user.getLogin());
             webClient.delete(user.getLogin());
-        }catch(WebApplicationException ex){
+        }catch(Exception ex){
             LOGGER.log(Level.SEVERE,
-                    "UsersManager: WebApplicationException deleting user, {0}",
+                    "UsersManager: Exception deleting user, {0}",
                     ex.getMessage());
             throw new BusinessLogicException("Error deleting user:\n"+ex.getMessage());
         }

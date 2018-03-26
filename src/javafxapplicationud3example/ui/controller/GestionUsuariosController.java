@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Logger;
+import java.util.logging.Level;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -33,12 +33,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javafxapplicationud3example.businessLogic.UsersManager;
 import javafxapplicationud3example.businessLogic.BusinessLogicException;
 import javafxapplicationud3example.businessLogic.LoginExistsException;
 import javafxapplicationud3example.transferObjects.DepartmentBean;
 import javafxapplicationud3example.transferObjects.Profile;
 import javafxapplicationud3example.transferObjects.UserBean;
+import javax.swing.WindowConstants;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -51,58 +51,88 @@ import net.sf.jasperreports.view.JasperViewer;
  * Controller class for users' management view . 
  * It contains event handlers and initialization code for the view defined in 
  * GestionUsuarios.fmxl file.
- * @author Javier Martín Uría
+ * @author javi
  */
-public class GestionUsuariosController{
-    private static final Logger LOGGER=Logger.getLogger("javafxapplicationud3example.ui.controller");
+public class GestionUsuariosController extends GenericController{
+    /**
+     * Create user data button.
+     */
     @FXML
     private Button btCrear;
+    /**
+     * Modify user data button.
+     */
     @FXML
     private Button btModificar;
+    /**
+     * Delete user data button.
+     */
     @FXML
     private Button btEliminar;
+    /**
+     * Quit application button.
+     */
     @FXML
     private Button btSalir;
+    /**
+    * User's login name UI text field.
+    */
     @FXML
     private TextField tfLogin;
+    /**
+    * User's name UI text field.
+    */
     @FXML
     private TextField tfNombre;
+    /**
+    * USER profile option button.
+    */
     @FXML
     private RadioButton rbUsuario;
+    /**
+    * ADMIN profile option button.
+    */
     @FXML
     private RadioButton rbAdmin;
+    /**
+    * User's profile options group.
+    */
     @FXML
     private ToggleGroup tgPerfil;
+    /**
+    * Department's combo box.
+    */
     @FXML
     private ComboBox cbDepartamentos;
+    /**
+    * User's data table view.
+    */
     @FXML
     private TableView tbUsers;
+    /**
+    * User's login data table column.
+    */
     @FXML
     private TableColumn tbcolLogin;
+    /**
+    * User's name data table column.
+    */
     @FXML
     private TableColumn tbcolNombre;
+    /**
+    * User's profile data table column.
+    */
     @FXML
     private TableColumn tbcolPerfil;
+    /**
+    * User's department data table column.
+    */
     @FXML
     private TableColumn tbcolDepartamento;
-    //Referencia para el objeto Ventana de la UI que controla esta clase
-    private Stage stage;
-    //Referencia para el objeto de la capa de lógica de negocio
-    private UsersManager usersManager;
-    //Modelo de datos de la tabla de usuarios
+    /**
+     * User's table data model.
+     */
     private ObservableList<UserBean> usersData;
-    
-    public Stage getStage(){
-        return stage;
-    }
-    
-    public void setStage(Stage stage){
-        this.stage=stage;
-    }
-    
-    public void setUsersManager(UsersManager usersManager){
-        this.usersManager=usersManager;
-    }
     /**
      * Method for initializing GestionUsuarios Stage. 
      * @param root The Parent object representing root node of view graph.
@@ -121,18 +151,13 @@ public class GestionUsuariosController{
             tbUsers.getSelectionModel().selectedItemProperty()
                     .addListener(this::handleUsersTableSelectionChanged);
  
-            //Establecer datos de la combo de departamentos
+            //Set department combo data model.
             ObservableList<DepartmentBean> departments=
                     FXCollections.observableArrayList(usersManager.getAllDepartments());
             cbDepartamentos.setItems(departments);
-            //Seleccionar un departamento por defecto
-            //cbDepartamentos.getSelectionModel().select("Electrónica");
-            //Seleccionar perfil usuario
-            tgPerfil.selectToggle(rbUsuario);
-            //Añadir manejador para eventos de foco
+            //Add focus event handler.
             //tfLogin.focusedProperty().addListener(this::focusChanged);
-            //Establecer las factorías para los valores de celda de las columnas de
-            //la tabla
+            //Set factories for cell values in users table columns.
             tbcolLogin.setCellValueFactory(
                     new PropertyValueFactory<>("login"));
             tbcolDepartamento.setCellValueFactory(
@@ -141,20 +166,15 @@ public class GestionUsuariosController{
                     new PropertyValueFactory<>("nombre"));
             tbcolPerfil.setCellValueFactory(
                     new PropertyValueFactory<>("perfil"));
-            //Crear una lista observable de Users para la tabla
+            //Create an obsrvable list for users table.
                 usersData=FXCollections.observableArrayList(usersManager.getAllUsers());
-            //Establecer el modelo de datos de la tabla
+            //Set table model.
             tbUsers.setItems(usersData);
+            //Show window.
             stage.show();
         }catch(BusinessLogicException e){
-            Alert alert=new Alert(Alert.AlertType.ERROR,
-                            "No se ha podido abrir la ventana.\n"+
-                            e.getMessage(),
-                            ButtonType.OK);
-            alert.getDialogPane().getStylesheets().add(
-            getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
-            alert.showAndWait();
-            //stage.close();
+            showErrorAlert("No se ha podido abrir la ventana.\n"+
+                            e.getMessage());
         }
     }
     
@@ -165,19 +185,25 @@ public class GestionUsuariosController{
      */
     private void handleWindowShowing(WindowEvent event){
         LOGGER.info("Beginning GestionUsuariosController::handleWindowShowing");
-            //Los botones Crear, Modificar y Eliminar se 
-            //deshabilitan.
-            btCrear.setDisable(true);
-            btModificar.setDisable(true);
-            btEliminar.setDisable(true);
-            //Establecemos el propmt text de los campos login y nombre
-            tfLogin.setPromptText("Introduzca un id...");
-            tfNombre.setPromptText("Introduzca nombre y apellidos...");
-            //Se enfoca el campo login
-            tfLogin.requestFocus();
+        //Select USER profile by default.
+        tgPerfil.selectToggle(rbUsuario);
+        //Select first department by default
+        cbDepartamentos.getSelectionModel().selectFirst();
+        //Create, modify and delete buttons are disabled.
+        btCrear.setDisable(true);
+        btModificar.setDisable(true);
+        btEliminar.setDisable(true);
+        //Set prompt text for login and name text fields.
+        tfLogin.setPromptText("Introduzca un id...");
+        tfNombre.setPromptText("Introduzca nombre y apellidos...");
+        //Login text field gets the focus.
+        tfLogin.requestFocus();
     }
-    /*
-     * Manejador de evento para un cambio de foco.
+    /**
+     * A focus change event event handler. This is an example that only logs a message.
+     * @param observable the observable focus property.
+     * @param oldValue the old boolean value for the property.
+     * @param newValue the new boolean value for the property.
      */
     private void focusChanged(ObservableValue observable,
              Boolean oldValue,
@@ -188,41 +214,43 @@ public class GestionUsuariosController{
             LOGGER.info("onBlur");
     }
     /**
-     * Manejador de los cambios de texto en los campos de Login y Nombre.
-     * Habilita/Deshabilita los botones Añadir y Modificar en función del 
-     * estado de los campos.
+     * Text change event handler for login and name text fields.
+     * It enables or disables create and modify buttons depending on those fields state.
      * @param observable the property being observed: TextProperty of TextField.
      * @param oldValue   old String value for the property.
      * @param newValue   new String value for the property.
-     * 
      */
     private void handleTextChanged(ObservableValue observable,
              String oldValue,
              String newValue) {
-        //Validar que los campos Login, Nombre, Perfil
-        //y Departamento están informados.
-        if(tfNombre.getText().trim().isEmpty()||
-           tfLogin.getText().trim().isEmpty()){
-            //En el caso de que no lo estén 
-            //deshabilitar los botones Crear y Modificar.
+        //Validate maximum length for login & name fields
+        //If text fields values are too long, show error message and disable 
+        //accept button
+        if(tfNombre.getText().trim().length()>this.MAX_LENGTH ||
+           tfLogin.getText().trim().length()>this.MAX_LENGTH){
+            showErrorAlert("La longitud máxima del campo es de 255 caracteres.");
+            btCrear.setDisable(true);
+            btModificar.setDisable(true);
+        }
+        //Validate login & name fields are not empty
+        else if(tfNombre.getText().trim().isEmpty()||
+           tfLogin.getText().trim().isEmpty() ){
+            //If they are empty, disable create ans modify buttons
             btCrear.setDisable(true);
             btModificar.setDisable(true);
         }else{
-        //En el caso de que estén informados, 
-        //habilitar el botón Crear y si hay una fila 
-        //seleccionada en la tabla habilitar también
-        //el botón Modificar. 
+            //If they are not empty, enables create button and, if there is also
+            // a row selected in users table, enable modify button.
             btCrear.setDisable(false);
-            if(tbUsers.getSelectionModel().getSelectedItem()!=null)
+            if(!tbUsers.getSelectionModel().isEmpty())
                 btModificar.setDisable(false);
         }
+        //Set color for text in login to black (it can be red if it wasn't valid).
         tfLogin.setStyle("-fx-text-inner-color: black;");
-
     }
     /**
-     * Manejador del evento de cambio de selección en la tabla de Usuarios.
-     * Habilita/Deshabilita los botones Crear, Modificar y Eliminar en función del 
-     * estado.
+     * Users table selection changed event handler. It enables or disables buttons
+     * depending on selection state of the table.
      * @param observable the property being observed: SelectedItem Property
      * @param oldValue   old UserBean value for the property.
      * @param newValue   new UserBean value for the property.
@@ -230,11 +258,8 @@ public class GestionUsuariosController{
     private void handleUsersTableSelectionChanged(ObservableValue observable,
              Object oldValue,
              Object newValue) {
-        //Si se ha seleccionado una fila de la tabla, 
-        //informar los campos Login, Nombre, 
-        //Departamento y Perfil con los valores de la 
-        //fila seleccionada. Habilitar los botones Crear,
-        //Modificar y Eliminar. 
+        //If there is a row selected, move row data to corresponding fields in the
+        //window and enable create, modify and delete buttons
         if(newValue!=null){
             UserBean user=(UserBean)newValue;
             tfLogin.setText(user.getLogin());
@@ -246,10 +271,8 @@ public class GestionUsuariosController{
             btModificar.setDisable(false);
             btEliminar.setDisable(false);
         }else{
-        //Si se ha deseleccionado una fila de la tabla, 
-        //vaciar los campos  Login, Nombre, 
-        //Departamento y Perfil. Deshabilitar los 
-        //botones Crear, Modificar y Eliminar.
+        //If there is not a row selected, clean window fields 
+        //and disable create, modify and delete buttons
             tfLogin.setText("");
             tfNombre.setText("");
             cbDepartamentos.getSelectionModel().clearSelection();
@@ -258,81 +281,85 @@ public class GestionUsuariosController{
             btModificar.setDisable(true);
             btEliminar.setDisable(true);
         }
+        //Focus login field
         tfLogin.requestFocus();
     }
+    /**
+     * Action event handler for create button. It validates new user data, send it
+     * to the business logic tier and updates user table view with new user data.
+     * @param event The ActionEvent object for the event.
+     */
     @FXML
     private void handleCrearAction(ActionEvent event){
-        //Validar que no existe ya un usuario con el 
-        //valor del campo login.
         try{
+            //Check if the is already a user with the login value defined in 
+            //the window
             usersManager.isLoginExisting(tfLogin.getText().trim());
-            //Si no existe, agregar un usuario con los datos de los campos, 
-            //actualizar la tabla de usuarios, vaciar todos los campos y 
-            //deshabilitar los botones Crear y Modificar
+            //If the login does not exist, add new user data to a new UserBean
             Profile perfil=Profile.USER;
             if(rbAdmin.isSelected())perfil=Profile.ADMIN;
-            //User to add
             UserBean user=new UserBean(tfLogin.getText(),
                                  tfNombre.getText(),
                                  perfil,
                                  (DepartmentBean)cbDepartamentos.getSelectionModel().getSelectedItem());
-            //add user to serverside
+            //Send user data to business logic tier
             this.usersManager.createUser(user);
-            //add to TableView
+            //Add to user data to TableView model
             tbUsers.getItems().add(user);
+            //Clean fields
             tfLogin.setText("");
             tfNombre.setText("");
             cbDepartamentos.getSelectionModel().clearSelection();
             tgPerfil.selectToggle(rbUsuario);
             btCrear.setDisable(true);
             btModificar.setDisable(true);
-        }catch(BusinessLogicException e){
-            Alert alert=new Alert(Alert.AlertType.ERROR,
-                            e.getMessage(),
-                            ButtonType.OK);
-            alert.getDialogPane().getStylesheets().add(
-            getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
-            alert.showAndWait();
+        }catch(LoginExistsException e){
+            //If Login exist show error message, focus login field and set its text 
+            //color to red.
+            showErrorAlert("El login de usuario ya existe.\n"+
+                           "Debe teclear un login que no exista.");
             tfLogin.requestFocus();
             tfLogin.setStyle("-fx-text-inner-color: red;");
+            LOGGER.severe("El login de usuario ya existe.");
+        }catch(BusinessLogicException e){
+            //If there is an error in the business logic tier show message and
+            //log it.
+            showErrorAlert("Error al crear usuario:\n"+
+                            e.getMessage());
+            LOGGER.log(Level.SEVERE,
+                        "UI GestionUsuariosController: Error creating user: {0}",
+                        e.getMessage());
         }
     }
+    /** 
+     * Action event handler for modify button. It validates user data, send it
+     * to the business logic tier and updates user table view with new user data.
+     * @param event The ActionEvent object for the event.
+     */
     @FXML
     private void handleModificarAction(ActionEvent event){
         try{
-            //Obtener el elemento seleccionado de la tabla
+            //Get selected user data from table view.
             UserBean selectedUser=((UserBean)tbUsers.getSelectionModel()
                                                     .getSelectedItem());
-            //Comprobar si el login de la fila seleccionada 
-            //coincide con el valor del campo login:
+            //Check if login value for selected row in table 
+            //is equal to login field content.
             if(!selectedUser.getLogin().equals(tfLogin.getText())){
-                //Si no coincide Validar que no existe ya el login
-                try{
+                //If not, validate login existence.
                     usersManager.isLoginExisting(tfLogin.getText().trim());
                     selectedUser.setLogin(tfLogin.getText().trim());
-                }catch(LoginExistsException e){
-                    Alert alert=new Alert(Alert.AlertType.ERROR,
-                                    e.getMessage(),
-                                    ButtonType.OK);
-                    alert.getDialogPane().getStylesheets().add(
-                    getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
-                    alert.showAndWait();
-                    tfLogin.requestFocus();
-                    tfLogin.setStyle("-fx-text-inner-color: red;");
-                    return;
-                }            
             }
-            //Si no existe, modificar el usuario seleccionado en la tabla 
-            //con los datos de los campos
+            //If login value does not exist: 
+            //send data to modify user data in business tier
+            this.usersManager.updateUser(selectedUser);
+            //update selected row data in table view 
             selectedUser.setNombre(tfNombre.getText().trim());
             Profile perfil=Profile.USER;
             if(rbAdmin.isSelected())perfil=Profile.ADMIN;
             selectedUser.setPerfil(perfil);
             selectedUser.setDepartamento((DepartmentBean)cbDepartamentos.getSelectionModel()
                                                                     .getSelectedItem());
-            //modify user in serverside
-            this.usersManager.updateUser(selectedUser);
-            //Clean editing fields
+            //Clean entry text fields
             tfLogin.setText("");
             tfNombre.setText("");
             cbDepartamentos.getSelectionModel().clearSelection();
@@ -343,23 +370,36 @@ public class GestionUsuariosController{
             tbUsers.getSelectionModel().clearSelection();
             //Refrescamos la tabla para que muestre los nuevos datos
             tbUsers.refresh();
+        }catch(LoginExistsException e){
+            //If Login exist show error message, focus login field and set its text 
+            //color to red.
+            showErrorAlert("El login de usuario pertenece a otro usuario.\n"+
+                           "Debe definir un login que no exista para ningún\n otro usuario.");
+            tfLogin.requestFocus();
+            tfLogin.setStyle("-fx-text-inner-color: red;");
         }catch(BusinessLogicException e){
-            Alert alert=new Alert(Alert.AlertType.ERROR,
-                            e.getMessage(),
-                            ButtonType.OK);
-            alert.getDialogPane().getStylesheets().add(
-            getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
-            alert.showAndWait();
+            //If there is an error in the business logic tier show message and
+            //log it.
+            showErrorAlert("Error al modificar usuario:\n"+
+                            e.getMessage());
+            LOGGER.log(Level.SEVERE,
+                        "UI GestionUsuariosController: Error updating user: {0}",
+                        e.getMessage());
         }
     }
+    /**
+     * Action event handler for delete button. It asks user for confirmation on delete,
+     * sends delete message to the business logic tier and updates user table view.
+     * @param event The ActionEvent object for the event.
+     */
     @FXML
     private void handleEliminarAction(ActionEvent event){
         Alert alert=null;
         try{
-            //Obtener el elemento seleccionado de la tabla
+            //Get selected user data from table view model
             UserBean selectedUser=((UserBean)tbUsers.getSelectionModel()
                                                         .getSelectedItem());
-            //Pedir confirmación para eliminar la fila seleccionada
+            //Ask user for confirmation on delete
             alert=new Alert(Alert.AlertType.CONFIRMATION,
                                     "¿Borrar la fila seleccionada?\n"
                                     + "Esta operación no se puede deshacer.",
@@ -381,20 +421,25 @@ public class GestionUsuariosController{
                 tgPerfil.selectToggle(rbUsuario);
                 btCrear.setDisable(true);
                 btModificar.setDisable(true);
-                //Deseleccionamos la fila seleccionada en la tabla
+                //Clear selection and refresh table view 
                 tbUsers.getSelectionModel().clearSelection();
-                //Refrescamos la tabla para que muestre los nuevos datos
                 tbUsers.refresh();
                 }
         }catch(BusinessLogicException e){
-            alert=new Alert(Alert.AlertType.ERROR,
-                                e.getMessage(),
-                                ButtonType.OK);
-            alert.getDialogPane().getStylesheets().add(
-            getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
-            alert.showAndWait();
+            //If there is an error in the business logic tier show message and
+            //log it.
+            showErrorAlert("Error al borrar usuario:\n"+
+                            e.getMessage());
+            LOGGER.log(Level.SEVERE,
+                        "UI GestionUsuariosController: Error deleting user: {0}",
+                        e.getMessage());
         }
     }
+    /**
+     * Action event handler for print button. It shows a JFrame containing a report.
+     * This JFrame allows to print the report.
+     * @param event The ActionEvent object for the event.
+     */
     @FXML
     private void handleImprimirAction(ActionEvent event){
         try {
@@ -409,18 +454,26 @@ public class GestionUsuariosController{
             Map<String,Object> parameters=new HashMap<>();
             //Fill report with data
             JasperPrint jasperPrint = JasperFillManager.fillReport(report,parameters,dataItems);
-            //Create and show the report window.
-            JasperViewer jasperViewer = new JasperViewer(jasperPrint);
+            //Create and show the report window. The second parameter false value makes 
+            //report window not to close app.
+            JasperViewer jasperViewer = new JasperViewer(jasperPrint,false);
             jasperViewer.setVisible(true);
+           // jasperViewer.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         } catch (JRException ex) {
-                Alert alert=new Alert(Alert.AlertType.ERROR,
-                                ex.getMessage(),
-                                ButtonType.OK);
-                alert.getDialogPane().getStylesheets().add(
-                getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
-                alert.showAndWait();
+            //If there is an error show message and
+            //log it.
+            showErrorAlert("Error al imprimir:\n"+
+                            ex.getMessage());
+            LOGGER.log(Level.SEVERE,
+                        "UI GestionUsuariosController: Error printing report: {0}",
+                        ex.getMessage());
         }
     }
+    /**
+     * Action event handler for help button. It shows a Stage containing a scene 
+     * with a web viewer showing a help page for the window.
+     * @param event The ActionEvent object for the event.
+     */
     @FXML
     private void handleHelpAction(ActionEvent event){
         try{
@@ -432,20 +485,24 @@ public class GestionUsuariosController{
                         ((HelpController)loader.getController());
                 //Initializes and shows help stage
                 helpController.initAndShowStage(root);
-            }catch(IOException ex){
-                Alert alert=new Alert(Alert.AlertType.ERROR,
-                                      "No se ha podido abrir la ventana:"+
-                                       ex.getMessage(),
-                                       ButtonType.OK);
-                alert.getDialogPane().getStylesheets().add(
-                    getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
-                alert.showAndWait();
+            }catch(Exception ex){
+                //If there is an error show message and
+                //log it.
+                showErrorAlert("Error al mostrar ventana de ayuda:\n"+
+                                ex.getMessage());
+                LOGGER.log(Level.SEVERE,
+                            "UI GestionUsuariosController: Error loading help window: {0}",
+                            ex.getMessage());
             }
 
     }    
+    /**
+     * Action event handler for exit button. It closes the application.
+     * @param event The ActionEvent object for the event.
+     */
     @FXML
     private void handleSalirAction(ActionEvent event){
-        //Se cierra la aplicación
+        //Closes application.
         Platform.exit();
-    }
+    }    
 }

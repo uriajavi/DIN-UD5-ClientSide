@@ -54,7 +54,7 @@ public class UsersManagerTestDataGenerator implements UsersManager {
      * @throws LoginExistsException 
      */
     @Override
-    public void isLoginExisting(String login) throws LoginExistsException {
+    public void isLoginExisting(String login) throws LoginExistsException,BusinessLogicException {
         LOGGER.info("Validating Login existence.");
         if (users.stream().filter(user->user.getLogin().equals(login)).count()!=0){
             LOGGER.severe("Login already exists.");

@@ -50,6 +50,6 @@ public interface UsersManager {
      * @param login The login value to be checked.
      * @throws LoginExistsException The Exception thrown in case login already exists
      */
-    public void isLoginExisting(String login) throws LoginExistsException;
+    public void isLoginExisting(String login) throws LoginExistsException,BusinessLogicException;
     
 }

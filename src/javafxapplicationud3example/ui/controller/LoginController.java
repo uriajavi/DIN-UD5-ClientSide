@@ -5,39 +5,24 @@
  */
 package javafxapplicationud3example.ui.controller;
 
-import java.io.IOException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javafxapplicationud3example.businessLogic.UsersManager;
 
 /**
  * Controller UI class for Login view in users' management application. It contains 
  * event handlers and initialization code for the view defined in Login.fxml file.
  * @author javi
  */
-public class LoginController {
-    /**
-     * Logger object used to log messages for application.
-     */
-    private static final Logger LOGGER=Logger.getLogger("javafxapplicationud3example.ui.controller");
-    /**
-     * Maximum text fields length.
-     */
-    private final int MAX_LENGTH=255;
+public class LoginController extends GenericController{
    /**
     * User's login name UI text field.
     */
@@ -53,38 +38,6 @@ public class LoginController {
      */
     @FXML
     private Button btAceptar;
-    /**
-     * The business logic object containing all business methods.
-     */
-    private UsersManager usersManager;
-    /**
-     * Sets the business logic object to be used by this UI controller. 
-     * @param usersManager An object implementing {@link UsersManager} interface.
-     */
-    public void setUsersManager(UsersManager usersManager){
-        this.usersManager=usersManager;
-    }
-    /**
-     * The Stage object associated to the Scene controlled by this controller.
-     * This is an utility method reference that provides quick access inside the 
-     * controller to the Stage object in order to make its initialization. Note 
-     * that this makes Application, Controller and Stage being tightly coupled.
-     */
-    private Stage stage;
-    /**
-     * Gets the Stage object related to this controller.
-     * @return The Stage object initialized by this controller.
-     */
-    public Stage getStage(){
-        return stage;
-    }
-    /**
-     * Sets the Stage object related to this controller. 
-     * @param stage The Stage object to be initialized.
-     */
-    public void setStage(Stage stage){
-        this.stage=stage;
-    }
     /**
      * Method for initializing Login Stage. 
      * @param root The Parent object representing root node of view graph.
@@ -185,20 +138,6 @@ public class LoginController {
             btAceptar.setDisable(true);
         //Else, enable accept button
         else btAceptar.setDisable(false);
-        
-    }
-    /**
-     * Shows an error message in an alert dialog.
-     * @param errorMsg The error message to be shown.
-     */
-    private void showErrorAlert(String errorMsg){
-        //Shows error dialog.
-        Alert alert=new Alert(AlertType.ERROR,
-                              errorMsg,
-                              ButtonType.OK);
-        alert.getDialogPane().getStylesheets().add(
-              getClass().getResource("/javafxapplicationud3example/ui/view/customCascadeStyleSheet.css").toExternalForm());
-        alert.showAndWait();
         
     }
 }
