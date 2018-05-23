@@ -10,7 +10,7 @@
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="472.0" prefWidth="749.0" stylesheets="@customCascadeStyleSheet.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafxapplicationud3example.ui.controller.GestionUsuariosController">
+<Pane fx:id="usersViewPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="472.0" prefWidth="749.0" stylesheets="@customCascadeStyleSheet.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafxapplicationud3example.ui.controller.GestionUsuariosController">
    <children>
       <Pane layoutX="14.0" layoutY="14.0" prefHeight="116.0" prefWidth="717.0" style="-fx-border-color: gray;">
          <children>
