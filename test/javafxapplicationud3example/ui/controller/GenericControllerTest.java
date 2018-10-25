@@ -24,10 +24,10 @@ public class GenericControllerTest {
      */
     @Test
     public void testSetUsersManager() {
-        System.out.println("setUsersManager");
+        /*System.out.println("setUsersManager");
         UsersManager usersManager = null;
         GenericController instance = new GenericController();
-        instance.setUsersManager(usersManager);
+        instance.setUsersManager(usersManager);*/
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
