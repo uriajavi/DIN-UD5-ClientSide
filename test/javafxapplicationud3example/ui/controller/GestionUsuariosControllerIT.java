@@ -34,18 +34,25 @@ public class GestionUsuariosControllerIT extends ApplicationTest {
      */
     @Override 
     public void start(Stage stage) throws Exception {
-       new ApplicationUD3Example().start(stage);
+            new ApplicationUD3Example().start(stage);
     }
     /**
-     * Test of initial state of login view.
+     * This method allows to see users' table view by interacting with login 
+     * view.
      */
     @Test
-    public void test1_InitialState() {
-        clickOn("#tfUsuario");
-        write("username");
-        clickOn("#tfPassword");
-        write("password");
-        clickOn("#btAceptar");
+    public void test1_InitialInteraction(){
+            clickOn("#tfUsuario");
+            write("username");
+            clickOn("#tfPassword");
+            write("password");
+            clickOn("#btAceptar");
+    }
+    /**
+     * Test of initial state of users' table view.
+     */
+    @Test
+    public void test2_InitialState() {
         verifyThat("#usersViewPane", isVisible());
         verifyThat("#tfLogin",  hasText(""));
         verifyThat("#tfNombre",  hasText(""));
@@ -63,6 +70,34 @@ public class GestionUsuariosControllerIT extends ApplicationTest {
         verifyThat("#tbcolPerfil", isVisible());
         verifyThat("#tbcolDepartamento", isVisible());
         verifyThat("#tfLogin",  (TextField t) -> t.isFocused());
+    }
+    /**
+     * Test button Create is enabled when login, name, profile 
+     * and department are all filled.
+     */
+    @Test
+    public void test3_CreateisEnabledWhenItShould() {
+        clickOn("#tfLogin");
+        write("any login");
+        verifyThat("#btCrear", isDisabled());
+        clickOn("#tfNombre");
+        write("any user name");
+        verifyThat("#btCrear", isEnabled());
+    }
+    /**
+     * Test button Modify is enabled when login, name, profile 
+     * and department are all filled and a table row is selected.
+     */
+    @Test
+    public void test4_ModifyisEnabledWhenItShould() {
+        clickOn("#tfLogin");
+        write("any login");
+        verifyThat("#btModificar", isDisabled());
+        clickOn("#tfNombre");
+        write("any user name");
+        verifyThat("#btModificar", isDisabled());
+        clickOn("#tbUsers");
+        verifyThat("#btModificar", isEnabled());
     }
     
 }

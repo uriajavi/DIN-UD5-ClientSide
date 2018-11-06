@@ -105,7 +105,7 @@ public class LoginController extends GenericController{
                 //Initializes stage
                 controller.initStage(root);
                 //hides login stage
-                stage.hide();
+                //stage.hide();
             }catch(Exception ex){
                 showErrorAlert("No se ha podido abrir la ventana:\n"+
                                        ex.getLocalizedMessage());
