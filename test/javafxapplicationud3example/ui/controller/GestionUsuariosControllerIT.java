@@ -42,18 +42,18 @@ public class GestionUsuariosControllerIT extends ApplicationTest {
      */
     @Test
     public void test1_InitialInteraction(){
-            clickOn("#tfUsuario");
-            write("username");
-            clickOn("#tfPassword");
-            write("password");
-            clickOn("#btAceptar");
+        clickOn("#tfUsuario");
+        write("username");
+        clickOn("#tfPassword");
+        write("password");
+        clickOn("#btAceptar");
+        verifyThat("#usersViewPane", isVisible());
     }
     /**
      * Test of initial state of users' table view.
      */
     @Test
     public void test2_InitialState() {
-        verifyThat("#usersViewPane", isVisible());
         verifyThat("#tfLogin",  hasText(""));
         verifyThat("#tfNombre",  hasText(""));
         verifyThat("#btCrear", isDisabled());
