@@ -120,8 +120,8 @@ public class GestionUsuariosControllerIT extends ApplicationTest {
         write(" ");
     }
     /**
-     * Test button Modify is enabled when login, name, profile 
-     * and department are all filled and a table row is selected.
+     * Test maximum length of text fields' content and the corresponding alert 
+     * message.
      */
     @Test
     public void testC_TextFieldsMaxLength() {
