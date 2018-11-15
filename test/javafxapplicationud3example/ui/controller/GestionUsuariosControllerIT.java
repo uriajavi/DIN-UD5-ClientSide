@@ -17,6 +17,7 @@ import org.testfx.framework.junit.ApplicationTest;
 import static org.testfx.matcher.base.NodeMatchers.isDisabled;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
+import static org.testfx.matcher.base.WindowMatchers.isShowing;
 import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
 
 
@@ -27,6 +28,15 @@ import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class GestionUsuariosControllerIT extends ApplicationTest {
+
+    private static final String OVERSIZED_TEXT="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"+
+                                               "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"+
+                                               "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"+
+                                               "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"+
+                                               "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"+
+                                               "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"+
+                                               "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"+
+                                               "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
     /**
      * Starts application to be tested.
      * @param stage Primary Stage object
@@ -41,7 +51,7 @@ public class GestionUsuariosControllerIT extends ApplicationTest {
      * view.
      */
     @Test
-    public void test1_InitialInteraction(){
+    public void testA_InitialInteraction(){
         clickOn("#tfUsuario");
         write("username");
         clickOn("#tfPassword");
@@ -53,7 +63,7 @@ public class GestionUsuariosControllerIT extends ApplicationTest {
      * Test of initial state of users' table view.
      */
     @Test
-    public void test2_InitialState() {
+    public void testB_InitialState() {
         verifyThat("#tfLogin",  hasText(""));
         verifyThat("#tfNombre",  hasText(""));
         verifyThat("#btCrear", isDisabled());
@@ -76,28 +86,60 @@ public class GestionUsuariosControllerIT extends ApplicationTest {
      * and department are all filled.
      */
     @Test
-    public void test3_CreateisEnabledWhenItShould() {
-        clickOn("#tfLogin");
+    public void testD_CreateisEnabledWhenItShould() {
+        doubleClickOn("#tfLogin");
         write("any login");
         verifyThat("#btCrear", isDisabled());
-        clickOn("#tfNombre");
-        write("any user name");
+        doubleClickOn("#tfNombre");
+        write("any name");
         verifyThat("#btCrear", isEnabled());
+        //clear last word from text fields
+        doubleClickOn("#tfLogin");
+        write(" ");
+        doubleClickOn("#tfNombre");
+        write(" ");
     }
     /**
      * Test button Modify is enabled when login, name, profile 
      * and department are all filled and a table row is selected.
      */
     @Test
-    public void test4_ModifyisEnabledWhenItShould() {
-        clickOn("#tfLogin");
+    public void testE_ModifyisEnabledWhenItShould() {
+        doubleClickOn("#tfLogin");
         write("any login");
         verifyThat("#btModificar", isDisabled());
-        clickOn("#tfNombre");
-        write("any user name");
+        doubleClickOn("#tfNombre");
+        write("any name");
         verifyThat("#btModificar", isDisabled());
         clickOn("#tbUsers");
         verifyThat("#btModificar", isEnabled());
+        //clear last word from text fields
+        doubleClickOn("#tfLogin");
+        write(" ");
+        doubleClickOn("#tfNombre");
+        write(" ");
+    }
+    /**
+     * Test maximum length of text fields' content and the corresponding alert 
+     * message.
+     */
+    @Test
+    public void testC_TextFieldsMaxLength() {
+       /* StringBuffer testText=new StringBuffer();
+        for(int i=0;i<=15;i++) testText.append("XXXXXXXXXXXXXXXX");
+        String oversizedText=new String(testText);*/
+        doubleClickOn("#tfLogin");
+        write(OVERSIZED_TEXT);
+        verifyThat("La longitud máxima del campo es de 255 caracteres.",isVisible());
+        clickOn("OK");
+        doubleClickOn("#tfLogin");
+        write(" ");
+        doubleClickOn("#tfNombre");
+        write(OVERSIZED_TEXT);
+        verifyThat("La longitud máxima del campo es de 255 caracteres.",isVisible());
+        clickOn("OK");
+        doubleClickOn("#tfNombre");
+        write(" ");
     }
     
 }
