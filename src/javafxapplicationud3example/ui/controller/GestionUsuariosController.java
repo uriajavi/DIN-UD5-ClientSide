@@ -349,9 +349,6 @@ public class GestionUsuariosController extends GenericController{
                     usersManager.isLoginExisting(tfLogin.getText().trim());
                     selectedUser.setLogin(tfLogin.getText().trim());
             }
-            //If login value does not exist: 
-            //send data to modify user data in business tier
-            this.usersManager.updateUser(selectedUser);
             //update selected row data in table view 
             selectedUser.setNombre(tfNombre.getText().trim());
             Profile perfil=Profile.USER;
@@ -359,6 +356,9 @@ public class GestionUsuariosController extends GenericController{
             selectedUser.setPerfil(perfil);
             selectedUser.setDepartamento((DepartmentBean)cbDepartamentos.getSelectionModel()
                                                                     .getSelectedItem());
+            //If login value does not exist: 
+            //send data to modify user data in business tier
+            this.usersManager.updateUser(selectedUser);
             //Clean entry text fields
             tfLogin.setText("");
             tfNombre.setText("");
