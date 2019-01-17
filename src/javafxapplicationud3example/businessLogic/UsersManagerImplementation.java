@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import javafxapplicationud3example.rest.UserRESTClient;
 import javafxapplicationud3example.transferObjects.DepartmentBean;
 import javafxapplicationud3example.transferObjects.UserBean;
+import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericType;
@@ -87,7 +88,7 @@ import javax.ws.rs.core.GenericType;
         }catch(NotFoundException ex){
             //If there is a NotFoundException 404,that is,
             //the login does not exist, we catch the exception and do nothing. 
-        }catch(Exception ex){
+        }catch(ClientErrorException ex){
             LOGGER.log(Level.SEVERE,
                     "UsersManager: Exception checking login exixtence, {0}",
                     ex.getMessage());

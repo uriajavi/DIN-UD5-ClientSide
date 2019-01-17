@@ -275,7 +275,7 @@ public class GestionUsuariosController extends GenericController{
         //and disable create, modify and delete buttons
             tfLogin.setText("");
             tfNombre.setText("");
-            cbDepartamentos.getSelectionModel().clearSelection();
+            //cbDepartamentos.getSelectionModel().clearSelection();
             tgPerfil.selectToggle(rbUsuario);
             btCrear.setDisable(true);
             btModificar.setDisable(true);
@@ -298,8 +298,8 @@ public class GestionUsuariosController extends GenericController{
             //If the login does not exist, add new user data to a new UserBean
             Profile perfil=Profile.USER;
             if(rbAdmin.isSelected())perfil=Profile.ADMIN;
-            UserBean user=new UserBean(tfLogin.getText(),
-                                 tfNombre.getText(),
+            UserBean user=new UserBean(tfLogin.getText().trim(),
+                                 tfNombre.getText().trim(),
                                  perfil,
                                  (DepartmentBean)cbDepartamentos.getSelectionModel().getSelectedItem());
             //Send user data to business logic tier
@@ -309,7 +309,7 @@ public class GestionUsuariosController extends GenericController{
             //Clean fields
             tfLogin.setText("");
             tfNombre.setText("");
-            cbDepartamentos.getSelectionModel().clearSelection();
+            //cbDepartamentos.getSelectionModel().clearSelection();
             tgPerfil.selectToggle(rbUsuario);
             btCrear.setDisable(true);
             btModificar.setDisable(true);
@@ -362,7 +362,7 @@ public class GestionUsuariosController extends GenericController{
             //Clean entry text fields
             tfLogin.setText("");
             tfNombre.setText("");
-            cbDepartamentos.getSelectionModel().clearSelection();
+            //cbDepartamentos.getSelectionModel().clearSelection();
             tgPerfil.selectToggle(rbUsuario);
             btCrear.setDisable(true);
             btModificar.setDisable(true);
@@ -417,7 +417,7 @@ public class GestionUsuariosController extends GenericController{
                 //clears editing fields
                 tfLogin.setText("");
                 tfNombre.setText("");
-                cbDepartamentos.getSelectionModel().clearSelection();
+                //cbDepartamentos.getSelectionModel().clearSelection();
                 tgPerfil.selectToggle(rbUsuario);
                 btCrear.setDisable(true);
                 btModificar.setDisable(true);
