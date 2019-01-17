@@ -5,6 +5,7 @@
  */
 package javafxapplicationud3example.ui.controller;
 
+import javafx.scene.Node;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import org.junit.FixMethodOrder;
@@ -12,6 +13,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import javafx.stage.Stage;
 import javafxapplicationud3example.ApplicationUD3Example;
+import static org.junit.Assert.assertNotNull;
 import static org.testfx.api.FxAssert.verifyThat;
 import org.testfx.framework.junit.ApplicationTest;
 import static org.testfx.matcher.base.NodeMatchers.isDisabled;
@@ -86,12 +88,12 @@ public class GestionUsuariosControllerIT extends ApplicationTest {
      * and department are all filled.
      */
     @Test
-    public void testD_CreateisEnabledWhenItShould() {
+    public void testC_CreateisEnabledWhenItShould() {
         doubleClickOn("#tfLogin");
-        write("any login");
+        write("anylogin");
         verifyThat("#btCrear", isDisabled());
         doubleClickOn("#tfNombre");
-        write("any name");
+        write("anyname");
         verifyThat("#btCrear", isEnabled());
         //clear last word from text fields
         doubleClickOn("#tfLogin");
@@ -105,13 +107,20 @@ public class GestionUsuariosControllerIT extends ApplicationTest {
      */
     @Test
     public void testE_ModifyisEnabledWhenItShould() {
+        //check that table view has rows
+        Node table=lookup("#tbUsers");
+        assertThat(");
         doubleClickOn("#tfLogin");
-        write("any login");
+        write("anylogin");
         verifyThat("#btModificar", isDisabled());
         doubleClickOn("#tfNombre");
-        write("any name");
+        write("anyname");
         verifyThat("#btModificar", isDisabled());
-        clickOn("#tbUsers");
+        //look for 1st row in table view
+        Node row=lookup(".table-row-cell").nth(0).query();
+        assertNotNull("Row is null: table has not that row. ",row);
+        clickOn(row);
+        //clickOn("#tbUsers");
         verifyThat("#btModificar", isEnabled());
         //clear last word from text fields
         doubleClickOn("#tfLogin");
@@ -124,20 +133,20 @@ public class GestionUsuariosControllerIT extends ApplicationTest {
      * message.
      */
     @Test
-    public void testC_TextFieldsMaxLength() {
+    public void testD_TextFieldsMaxLength() {
        /* StringBuffer testText=new StringBuffer();
         for(int i=0;i<=15;i++) testText.append("XXXXXXXXXXXXXXXX");
         String oversizedText=new String(testText);*/
         doubleClickOn("#tfLogin");
         write(OVERSIZED_TEXT);
         verifyThat("La longitud máxima del campo es de 255 caracteres.",isVisible());
-        clickOn("OK");
+        clickOn("Aceptar");
         doubleClickOn("#tfLogin");
         write(" ");
         doubleClickOn("#tfNombre");
         write(OVERSIZED_TEXT);
         verifyThat("La longitud máxima del campo es de 255 caracteres.",isVisible());
-        clickOn("OK");
+        clickOn("Aceptar");
         doubleClickOn("#tfNombre");
         write(" ");
     }
