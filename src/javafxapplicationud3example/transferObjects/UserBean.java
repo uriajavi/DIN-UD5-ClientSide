@@ -6,6 +6,7 @@
 package javafxapplicationud3example.transferObjects;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javax.xml.bind.annotation.XmlElement;
@@ -67,5 +68,38 @@ public class UserBean implements Serializable {
     public void setDepartamento(DepartmentBean departamento){
         this.departamento.set(departamento);
     }
-    
+   @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof UserBean)) {
+            return false;
+        }
+        UserBean other = (UserBean) object;
+        if ((this.login == null && other.login != null) || 
+            (this.login != null && !this.login.get().equals(other.login.get()))) {
+            return false;
+        }
+        if ((this.nombre == null && other.nombre != null) || 
+            (this.nombre != null && !this.nombre.get().equals(other.nombre.get()))) {
+            return false;
+        }
+        if ((this.perfil == null && other.perfil != null) || 
+            (this.perfil != null && !this.perfil.get().equals(other.perfil.get()))) {
+            return false;
+        }
+        if ((this.departamento == null && other.departamento != null) || 
+            (this.departamento != null && 
+                !this.departamento.get().equals(other.departamento.get()))) {
+            return false;
+        }        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 41 * hash + Objects.hashCode(this.login);
+        hash = 41 * hash + Objects.hashCode(this.nombre);
+        hash = 41 * hash + Objects.hashCode(this.perfil);
+        hash = 41 * hash + Objects.hashCode(this.departamento);
+        return hash;
+    }
 }

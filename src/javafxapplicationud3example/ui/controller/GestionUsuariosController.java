@@ -374,7 +374,8 @@ public class GestionUsuariosController extends GenericController{
             //If Login exist show error message, focus login field and set its text 
             //color to red.
             showErrorAlert("El login de usuario pertenece a otro usuario.\n"+
-                           "Debe definir un login que no exista para ningún\n otro usuario.");
+                           "Debe definir un login que no exista para ningún\n"+
+                           " otro usuario.");
             tfLogin.requestFocus();
             tfLogin.setStyle("-fx-text-inner-color: red;");
         }catch(BusinessLogicException e){

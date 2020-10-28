@@ -5,12 +5,15 @@
  */
 package javafxapplicationud3example.ui.controller;
 
+import java.util.concurrent.TimeoutException;
 import javafx.stage.Stage;
 import javafxapplicationud3example.ApplicationUD3Example;
+import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import static org.testfx.api.FxAssert.verifyThat;
+import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import static org.testfx.matcher.base.NodeMatchers.isDisabled;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
@@ -28,13 +31,23 @@ public class LoginControllerIT extends ApplicationTest {
      * @param stage Primary Stage object
      * @throws Exception If there is any error
      */
-    @Override public void start(Stage stage) throws Exception {
+    /*@Override public void start(Stage stage) throws Exception {
        new ApplicationUD3Example().start(stage);
-    }
+    }*/
     /**
      * Stops application to be tested: it does nothing.
      */
     @Override public void stop() {}
+    /**
+     * Set up Java FX fixture for tests. This is a general approach for using a 
+     * unique instance of the application in the test.
+     * @throws java.util.concurrent.TimeoutException
+     */
+    @BeforeClass
+    public static void setUpClass() throws TimeoutException {
+        FxToolkit.registerPrimaryStage();
+        FxToolkit.setupApplication(ApplicationUD3Example.class);
+   }
     /**
      * Test of initial state of login view.
      */

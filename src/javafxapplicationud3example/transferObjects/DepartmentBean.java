@@ -6,6 +6,7 @@
 package javafxapplicationud3example.transferObjects;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -53,6 +54,34 @@ public class DepartmentBean implements Serializable {
     public String toString() {
         return name;
     }
+   @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof DepartmentBean)) {
+            return false;
+        }
+        DepartmentBean other = (DepartmentBean) object;
+        if ((this.id == null && other.id != null) || 
+            (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        if ((this.name == null && other.name != null) || 
+            (this.name != null && !this.name.equals(other.name))) {
+            return false;
+        }
+        if ((this.description == null && other.description != null) || 
+            (this.description != null && !this.description.equals(other.description))) {
+            return false;
+        }
+        return true;
+    }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 73 * hash + Objects.hashCode(this.id);
+        hash = 73 * hash + Objects.hashCode(this.description);
+        hash = 73 * hash + Objects.hashCode(this.name);
+        return hash;
+    }
     
 }
