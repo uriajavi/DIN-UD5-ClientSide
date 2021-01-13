@@ -24,12 +24,16 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -134,6 +138,11 @@ public class GestionUsuariosController extends GenericController{
      */
     private ObservableList<UserBean> usersData;
     /**
+     * Help view showing button.
+     */
+    @FXML
+    private Button btHelp;
+    /**
      * Method for initializing GestionUsuarios Stage. 
      * @param root The Parent object representing root node of view graph.
      */
@@ -141,16 +150,36 @@ public class GestionUsuariosController extends GenericController{
         try{
             Scene scene = new Scene(root);
             stage = new Stage();
+            //Set stage properties
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);
             stage.setTitle("Gestion de Usuarios");
             stage.setResizable(false);
             stage.setOnShowing(this::handleWindowShowing);
+            //Add property change listeners for controls
             tfLogin.textProperty().addListener(this::handleTextChanged);
             tfNombre.textProperty().addListener(this::handleTextChanged);
             tbUsers.getSelectionModel().selectedItemProperty()
                     .addListener(this::handleUsersTableSelectionChanged);
- 
+            
+            //These following lines are an example workaround to allow Menu Help 
+            //to fire an action.It is preferable to avoid this but if you need it...
+            
+            //Obtains the layout containing the menu bar from the scene node graph
+            HBox hBoxMenu= (HBox)root.getChildrenUnmodifiable().get(0);
+            //Get the menu bar from the children of the layout got before
+            MenuBar menuBar= (MenuBar)hBoxMenu.getChildren().get(0);
+            //Get the second menu from the menu bar
+            Menu menuHelp=menuBar.getMenus().get(1);
+            //Add a listener for the showing property that fires the action event
+            //on the first menu item of that menu
+            menuHelp.showingProperty().addListener(
+                (observableValue, oldValue, newValue) -> {
+                    if (newValue) {
+                        menuHelp.getItems().get(0).fire();
+                    }
+                }
+            );
             //Set department combo data model.
             ObservableList<DepartmentBean> departments=
                     FXCollections.observableArrayList(usersManager.getAllDepartments());
@@ -395,13 +424,13 @@ public class GestionUsuariosController extends GenericController{
      */
     @FXML
     private void handleEliminarAction(ActionEvent event){
-        Alert alert=null;
         try{
+            LOGGER.info("Deleting user...");
             //Get selected user data from table view model
             UserBean selectedUser=((UserBean)tbUsers.getSelectionModel()
                                                         .getSelectedItem());
             //Ask user for confirmation on delete
-            alert=new Alert(Alert.AlertType.CONFIRMATION,
+            Alert alert=new Alert(Alert.AlertType.CONFIRMATION,
                                     "¿Borrar la fila seleccionada?\n"
                                     + "Esta operación no se puede deshacer.",
                                     ButtonType.OK,ButtonType.CANCEL);
@@ -425,7 +454,7 @@ public class GestionUsuariosController extends GenericController{
                 //Clear selection and refresh table view 
                 tbUsers.getSelectionModel().clearSelection();
                 tbUsers.refresh();
-                }
+            }
         }catch(BusinessLogicException e){
             //If there is an error in the business logic tier show message and
             //log it.
@@ -444,6 +473,7 @@ public class GestionUsuariosController extends GenericController{
     @FXML
     private void handleImprimirAction(ActionEvent event){
         try {
+            LOGGER.info("Beginning printing action...");
             JasperReport report=
                 JasperCompileManager.compileReport(getClass()
                     .getResourceAsStream("/javafxapplicationud3example/ui/report/newReport1.jrxml"));
@@ -478,6 +508,7 @@ public class GestionUsuariosController extends GenericController{
     @FXML
     private void handleHelpAction(ActionEvent event){
         try{
+            LOGGER.info("Loading help view...");
             //Load node graph from fxml file
             FXMLLoader loader=
                 new FXMLLoader(getClass().getResource("/javafxapplicationud3example/ui/view/Help.fxml"));
@@ -486,7 +517,7 @@ public class GestionUsuariosController extends GenericController{
                         ((HelpController)loader.getController());
                 //Initializes and shows help stage
                 helpController.initAndShowStage(root);
-            }catch(Exception ex){
+        }catch(Exception ex){
                 //If there is an error show message and
                 //log it.
                 showErrorAlert("Error al mostrar ventana de ayuda:\n"+
@@ -494,15 +525,16 @@ public class GestionUsuariosController extends GenericController{
                 LOGGER.log(Level.SEVERE,
                             "UI GestionUsuariosController: Error loading help window: {0}",
                             ex.getMessage());
-            }
+        }
 
-    }    
+    }
     /**
      * Action event handler for exit button. It closes the application.
      * @param event The ActionEvent object for the event.
      */
     @FXML
     private void handleSalirAction(ActionEvent event){
+        LOGGER.info("Closing application.");
         //Closes application.
         Platform.exit();
     }    
