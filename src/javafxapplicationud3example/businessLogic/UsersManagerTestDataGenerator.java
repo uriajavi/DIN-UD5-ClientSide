@@ -38,7 +38,7 @@ public class UsersManagerTestDataGenerator implements UsersManager {
         departments.add(department);
         //Create 25 UserBean fake data objects.
         for(int i=0;i<25;i++)
-            users.add(new UserBean("login"+i,"nombre"+i,Profile.USER,department));
+            users.add(new UserBean("login"+i,"nombre"+i,Profile.USER,department,true));
     }
     /**
      * This method returns a Collection of {@link UserBean}, containing all users data.

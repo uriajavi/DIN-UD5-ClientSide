@@ -42,6 +42,7 @@
           <TableColumn fx:id="tbcolNombre" prefWidth="191.0" text="Nombre" />
           <TableColumn fx:id="tbcolPerfil" minWidth="0.0" prefWidth="74.0" text="Perfil" />
           <TableColumn fx:id="tbcolDepartamento" prefWidth="218.0" text="Departamento" />
+          <TableColumn fx:id="tbcolStatus" prefWidth="75.0" text="Status" />
         </columns>
       </TableView>
       <Button id="eliminar" fx:id="btEliminar" layoutX="598.0" layoutY="243.0" mnemonicParsing="false" onAction="#handleEliminarAction" prefHeight="25.0" prefWidth="112.0" text="Eliminar" />

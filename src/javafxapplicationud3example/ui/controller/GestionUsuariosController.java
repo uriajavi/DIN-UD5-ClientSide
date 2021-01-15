@@ -16,6 +16,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -32,6 +33,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
@@ -134,6 +136,11 @@ public class GestionUsuariosController extends GenericController{
     @FXML
     private TableColumn tbcolDepartamento;
     /**
+    * User's department data table column.
+    */
+    @FXML
+    private TableColumn tbcolStatus;
+    /**
      * User's table data model.
      */
     private ObservableList<UserBean> usersData;
@@ -195,10 +202,46 @@ public class GestionUsuariosController extends GenericController{
                     new PropertyValueFactory<>("nombre"));
             tbcolPerfil.setCellValueFactory(
                     new PropertyValueFactory<>("perfil"));
-            //Create an obsrvable list for users table.
-                usersData=FXCollections.observableArrayList(usersManager.getAllUsers());
+            
+            //Following code show how a editable checkbox cell must be implemented.
+            //YOU MUST SEE ALSO UserBean class for column status property support!!!.
+            
+            //First, set the column cell factory:
+            tbcolStatus.setCellFactory(
+                    CheckBoxTableCell.<UserBean>forTableColumn(tbcolStatus));
+            //then, set the value cell factory:
+            tbcolStatus.setCellValueFactory(
+                    new PropertyValueFactory<>("status"));
+            //Create an observable list for users table.
+            usersData=FXCollections.observableArrayList(usersManager.getAllUsers());
+            //Now the key step!!!: add a listener for checkbox value changes noting that the
+            //CheckBoxTableCell renders the CheckBox 'live', meaning that the 
+            //CheckBox is always interactive. A side-effect of this is that the 
+            //usual editing callbacks (such as on edit commit) will not be called. 
+            //If you want to be notified of changes, it is recommended to directly 
+            //observe the boolean properties that are manipulated by the CheckBox 
+            //(see description for CheckBoxTableCell in javadoc)
+            //So we iterate on table items adding listeners for property being 
+            //represented by the checkbox.
+            //We use the lambda implementation to access the user object in which
+            //the status property is.
+            usersData.forEach(
+                    user -> user.statusProperty().addListener((observable, oldValue, newValue) -> {
+                        LOGGER.log(Level.INFO,
+                                     "Status property changed.newvalue {0}",
+                                      oldValue.toString());
+                        LOGGER.log(Level.INFO,             
+                                     "User modified: {0}",
+                                      user.getNombre());
+                    })
+            );
+            //for(UserBean user: usersData)
+            //    user.statusProperty().addListener(this::handleStatusPropertyChange);
+           
             //Set table model.
             tbUsers.setItems(usersData);
+            //finally,set table as editable
+            tbUsers.setEditable(true);
             //Show window.
             stage.show();
         }catch(BusinessLogicException e){
@@ -207,6 +250,19 @@ public class GestionUsuariosController extends GenericController{
         }
     }
     
+    /**
+     * Status property change handler. Note that in this method WE CANNOT GET
+     * THE USER OBJECT FOR THE STATUS PROPERTY!!!.
+     * @param observable
+     * @param oldValue
+     * @param newValue 
+     */
+    private void handleStatusPropertyChange(ObservableValue observable, 
+                                            Boolean oldValue, Boolean newValue){
+        LOGGER.log(Level.INFO,
+                        "Status property changed.newvalue {0}",
+                       newValue.toString());
+    }
     /**
      * Initializes window state. It implements behavior for WINDOW_SHOWING type 
      * event.
@@ -330,7 +386,7 @@ public class GestionUsuariosController extends GenericController{
             UserBean user=new UserBean(tfLogin.getText().trim(),
                                  tfNombre.getText().trim(),
                                  perfil,
-                                 (DepartmentBean)cbDepartamentos.getSelectionModel().getSelectedItem());
+                                 (DepartmentBean)cbDepartamentos.getSelectionModel().getSelectedItem(),true);
             //Send user data to business logic tier
             this.usersManager.createUser(user);
             //Add to user data to TableView model

@@ -7,6 +7,7 @@ package javafxapplicationud3example.transferObjects;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javax.xml.bind.annotation.XmlElement;
@@ -23,22 +24,30 @@ public class UserBean implements Serializable {
     private final SimpleStringProperty nombre;
     private final SimpleObjectProperty<Profile> perfil;
     private final SimpleObjectProperty<DepartmentBean> departamento;
+    //Added field for CheckBox editing table cell example: 
+    //Declare it as a property to allow the TableCell will be able 
+    //to observe the ObservableValue for changes: see statusProperty
+    //method below!!!
+    private final SimpleBooleanProperty status;
 
     public UserBean() {
         this.login=new SimpleStringProperty();
         this.nombre=new SimpleStringProperty();
         this.perfil=new SimpleObjectProperty();
         this.departamento=new SimpleObjectProperty();
+        this.status=new SimpleBooleanProperty();
     }
     
     public UserBean(String login,
                     String nombre,
                     Profile perfil,
-                    DepartmentBean departamento){
+                    DepartmentBean departamento,
+                    Boolean status){
         this.login=new SimpleStringProperty(login);
         this.nombre=new SimpleStringProperty(nombre);
         this.perfil=new SimpleObjectProperty(perfil);
         this.departamento=new SimpleObjectProperty(departamento);
+        this.status=new SimpleBooleanProperty(status);
     }
     
     public String getLogin(){
@@ -67,6 +76,20 @@ public class UserBean implements Serializable {
     }
     public void setDepartamento(DepartmentBean departamento){
         this.departamento.set(departamento);
+    }
+    public Boolean getStatus(){
+        return this.status.get();
+    }
+    public void setStatus(Boolean status){
+        this.status.set(status);
+    }
+    //This method is mandatory for the TableCell and TableView
+    //to be able to observe the ObservableValue for changes
+    //(see javadoc for PropertyValueFactory). 
+    //Finally this allows the table to show the value of the field
+    //as the state of the checkbox.
+    public SimpleBooleanProperty statusProperty(){
+        return this.status;
     }
    @Override
     public boolean equals(Object object) {
