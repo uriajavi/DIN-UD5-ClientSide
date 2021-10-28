@@ -53,6 +53,10 @@ public class LoginController extends GenericController{
         stage.setResizable(false);
         //Set window's events handlers
         stage.setOnShowing(this::handleWindowShowing);
+        //Set handler for Aceptar Button
+        btAceptar.addEventHandler(ActionEvent.ACTION,
+                this::handleButtonAceptarAction);
+        
         //Set control events handlers (if not set by FXML)
         tfUsuario.textProperty().addListener(this::textChanged);
         tfPassword.textProperty().addListener(this::textChanged);
@@ -65,17 +69,22 @@ public class LoginController extends GenericController{
      * @param event  The window event 
      */
     private void handleWindowShowing(WindowEvent event){
-        LOGGER.info("Beginning LoginController::handleWindowShowing");
-        //Aceptar button is disabled.
-        btAceptar.setDisable(true);
-        //Set all prompt texts.
-        tfUsuario.setPromptText("Introduzca su id...");
-        tfPassword.setPromptText("Introduzca su contraseña...");
-        //Set tooltip for btAceptar
-        btAceptar.setTooltip(
-                new Tooltip("Pulse para validar credenciales"));
-        btAceptar.setMnemonicParsing(true);
-        btAceptar.setText("_Aceptar");
+        try{
+            LOGGER.info("Beginning LoginController::handleWindowShowing");
+            //Aceptar button is disabled.
+            btAceptar.setDisable(true);
+            //Set all prompt texts.
+            tfUsuario.setPromptText("Introduzca su id...");
+            tfPassword.setPromptText("Introduzca su contraseña...");
+            //Set tooltip for btAceptar
+            btAceptar.setTooltip(
+                    new Tooltip("Pulse para validar credenciales"));
+            btAceptar.setMnemonicParsing(true);
+            btAceptar.setText("_Aceptar");
+        }catch(Exception e){
+            showErrorAlert(""+e.getMessage());
+            LOGGER.severe(e.getMessage());
+        }
     }
     /**
      * Action event handler for Aceptar button. It validates that user and password
@@ -85,34 +94,31 @@ public class LoginController extends GenericController{
      */
     @FXML
     private void handleButtonAceptarAction(ActionEvent event) {
-        //Validates user and password fields.
-        if(this.tfUsuario.getText().trim().equals("")||
-           this.tfPassword.getText().trim().equals("")){
-            //Shows error dialog.
-            showErrorAlert("Los campos usuario y contraseña \n deben estar informados");
-        }
-        else{
-            //Shows view from GestionUsuarios.fxml
-            try{
-                //Load node graph from fxml file
-                FXMLLoader loader=
-                        new FXMLLoader(getClass().getResource("/javafxapplicationud3example/ui/view/GestionUsuarios.fxml"));
-                Parent root = (Parent)loader.load();
-                //Get controller for graph 
-                GestionUsuariosController controller=
-                        ((GestionUsuariosController)loader.getController());
-                controller.setUsersManager(usersManager);
-                //Initializes stage
-                controller.initStage(root);
-                //hides login stage
-                //stage.hide();
-            }catch(Exception ex){
-                showErrorAlert("No se ha podido abrir la ventana:\n"+
-                                       ex.getLocalizedMessage());
-                LOGGER.log(Level.SEVERE,
-                        "UI LoginController: Error opening users managing window: {0}",
-                        ex.getMessage());
+        try{
+            //Validate user and password fields.
+            if(this.tfUsuario.getText().trim().equals("")||
+               this.tfPassword.getText().trim().equals("")){
+                //throw validation error 
+                    throw new Exception("Los campos usuario y contraseña \n deben estar informados");
             }
+            //Show view from GestionUsuarios.fxml
+            //Load node graph from fxml file
+            FXMLLoader loader=
+                new FXMLLoader(getClass().getResource("/javafxapplicationud3example/ui/view/GestionUsuarios.fxml"));
+            Parent root = (Parent)loader.load();
+            //Get controller for graph 
+            GestionUsuariosController controller=
+                    ((GestionUsuariosController)loader.getController());
+            controller.setUsersManager(usersManager);
+            //Initialize stage
+            controller.initStage(root);
+            //hide login stage
+            //stage.hide();
+        }catch(Exception ex){
+            showErrorAlert(ex.getLocalizedMessage());
+            LOGGER.log(Level.SEVERE,
+                    "UI LoginController: Error opening users managing window: {0}",
+                    ex.getMessage());
         }
     }
     /**

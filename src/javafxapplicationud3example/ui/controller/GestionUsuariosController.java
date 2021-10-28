@@ -226,17 +226,19 @@ public class GestionUsuariosController extends GenericController{
             //We use the lambda implementation to access the user object in which
             //the status property is.
             usersData.forEach(
-                    user -> user.statusProperty().addListener((observable, oldValue, newValue) -> {
+                    user -> user.statusProperty()
+                                .addListener((observable, oldValue, newValue) -> {
                         LOGGER.log(Level.INFO,
                                      "Status property changed.newvalue {0}",
-                                      oldValue.toString());
+                                      newValue.toString());
                         LOGGER.log(Level.INFO,             
                                      "User modified: {0}",
                                       user.getNombre());
                     })
             );
             //for(UserBean user: usersData)
-            //    user.statusProperty().addListener(this::handleStatusPropertyChange);
+            //    user.statusProperty()
+            //        .addListener(this::handleStatusPropertyChange);
            
             //Set table model.
             tbUsers.setItems(usersData);

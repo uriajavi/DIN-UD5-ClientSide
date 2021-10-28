@@ -52,6 +52,7 @@ public class HelpController {
         WebEngine webEngine = webView.getEngine();
         //Load help page.
         webEngine.load(getClass()
-                .getResource("/javafxapplicationud3example/ui/view/help.html").toExternalForm());
+                .getResource("/javafxapplicationud3example/ui/view/help.html")
+                .toExternalForm());
     }
 }

@@ -340,7 +340,8 @@ public class GestionUsuariosControllerIT extends ApplicationTest {
         clickOn(cbDepartamentos);
         int departmentCount=cbDepartamentos.getItems().size();
         if (departmentCount>1){
-            if(selectedUser.getDepartamento().equals(cbDepartamentos.getItems().get(0))) 
+            if(selectedUser.getDepartamento()
+                    .equals(cbDepartamentos.getItems().get(0))) 
                 press(KeyCode.DOWN);
             else
                 press(KeyCode.UP);

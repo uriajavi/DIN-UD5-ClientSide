@@ -22,7 +22,7 @@
       <HBox alignment="BOTTOM_RIGHT" prefHeight="73.0" prefWidth="364.0">
          <children>
             <Button fx:id="btAceptar" mnemonicParsing="false" 
-                    onAction="#handleButtonAceptarAction" text="Aceptar" />
+                    text="Aceptar" />
          </children>
       </HBox>
    </children>

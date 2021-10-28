@@ -31,9 +31,9 @@ public class LoginControllerIT extends ApplicationTest {
      * @param stage Primary Stage object
      * @throws Exception If there is any error
      */
-    /*@Override public void start(Stage stage) throws Exception {
+    @Override public void start(Stage stage) throws Exception {
        new ApplicationUD3Example().start(stage);
-    }*/
+    }
     /**
      * Stops application to be tested: it does nothing.
      */
@@ -43,11 +43,11 @@ public class LoginControllerIT extends ApplicationTest {
      * unique instance of the application in the test.
      * @throws java.util.concurrent.TimeoutException
      */
-    @BeforeClass
+    /*@BeforeClass
     public static void setUpClass() throws TimeoutException {
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(ApplicationUD3Example.class);
-   }
+   }*/
     /**
      * Test of initial state of login view.
      */

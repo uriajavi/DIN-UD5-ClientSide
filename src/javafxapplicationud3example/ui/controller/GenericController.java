@@ -20,7 +20,8 @@ public class GenericController {
     /**
      * Logger object used to log messages for application.
      */
-    protected static final Logger LOGGER=Logger.getLogger("javafxapplicationud3example.ui.controller");
+    protected static final Logger LOGGER=
+            Logger.getLogger("javafxapplicationud3example.ui.controller");
     /**
      * Maximum text fields length.
      */

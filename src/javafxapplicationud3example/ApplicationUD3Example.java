@@ -29,11 +29,11 @@ public class ApplicationUD3Example extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         //Create Bussines Logic Controller to be passed to UI controllers
-        //UsersManager bussinessLogicController=
-        //        UsersManagerFactory.createUsersManager(REST_WEB_CLIENT_TYPE);
-        //Uncomment this sentence if you want fake data for testing the UI 
         UsersManager bussinessLogicController=
-                UsersManagerFactory.createUsersManager(TEST_MOCK_TYPE);
+                UsersManagerFactory.createUsersManager(REST_WEB_CLIENT_TYPE);
+        //Uncomment this sentence if you want fake data for testing the UI 
+        //UsersManager bussinessLogicController=
+        //        UsersManagerFactory.createUsersManager(TEST_MOCK_TYPE);
         //Load node graph from fxml file
         FXMLLoader loader=new FXMLLoader(
                 getClass().getResource("ui/view/Login.fxml"));
