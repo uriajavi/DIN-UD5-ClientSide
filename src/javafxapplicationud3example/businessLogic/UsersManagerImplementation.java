@@ -88,9 +88,9 @@ import javax.ws.rs.core.GenericType;
         }catch(NotFoundException ex){
             //If there is a NotFoundException 404,that is,
             //the login does not exist, we catch the exception and do nothing. 
-        }catch(ClientErrorException ex){
+        }catch(WebApplicationException ex){
             LOGGER.log(Level.SEVERE,
-                    "UsersManager: Exception checking login exixtence, {0}",
+                    "UsersManager: Exception checking login existence, {0}",
                     ex.getMessage());
             throw new BusinessLogicException("Error finding user:\n"+ex.getMessage());
         }

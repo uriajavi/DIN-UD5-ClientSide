@@ -10,6 +10,8 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import java.util.ResourceBundle;
+import javafxapplicationud3example.transferObjects.UserBean;
+import javax.ws.rs.WebApplicationException;
 
 
 /**
@@ -52,7 +54,7 @@ public class UserRESTClient {
      * @return The object containing the data.
      * @throws ClientErrorException If there is an error while processing. The error is wrapped in a HTTP error response.  
      */
-    public <T> T find_XML(Class<T> responseType, String id) throws ClientErrorException {
+    public <T> T find_XML(Class<T> responseType, String id) throws WebApplicationException {
         WebTarget resource = webTarget;
         //Set the path for the request.
         resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{id}));
@@ -66,7 +68,7 @@ public class UserRESTClient {
      * @return A generic type, normally a list, containing the data.
      * @throws ClientErrorException If there is an error while processing. The error is wrapped in a HTTP error response.  
      */
-    public <T> T findAll_XML(GenericType<T> responseType) throws ClientErrorException {
+    public <T> T findAll_XML(GenericType<T> responseType) throws WebApplicationException {
         WebTarget resource = webTarget;
         //Make request and return data from the response
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
@@ -78,7 +80,7 @@ public class UserRESTClient {
      * @return A generic type, normally a list, containing the data.
      * @throws ClientErrorException If there is an error while processing. The error is wrapped in a HTTP error response.  
      */
-    public <T> T findAllDeps_XML(GenericType<T> responseType) throws ClientErrorException {
+    public <T> T findAllDeps_XML(GenericType<T> responseType) throws WebApplicationException {
         WebTarget resource = webTarget;
         //Set the path for the request.
         resource = resource.path("departments");
@@ -91,9 +93,12 @@ public class UserRESTClient {
      * @param requestEntity The object containing data to be created.
      * @throws ClientErrorException If there is an error while processing. The error is wrapped in a HTTP error response.  
      */
-    public void create_XML(Object requestEntity) throws ClientErrorException {
+    public void create_XML(Object requestEntity) throws WebApplicationException {
         //Make request
-        webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
+        webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
+                .post(javax.ws.rs.client.Entity.entity(requestEntity,
+                                    javax.ws.rs.core.MediaType.APPLICATION_XML),
+                        UserBean.class);
     }
     /**
      * Create an user's entity XML representation and send it as a request to update it
@@ -101,18 +106,22 @@ public class UserRESTClient {
      * @param requestEntity The object containing data to be updated.
      * @throws ClientErrorException If there is an error while processing. The error is wrapped in a HTTP error response.  
      */
-    public void update_XML(Object requestEntity) throws ClientErrorException {
+    public void update_XML(Object requestEntity) throws WebApplicationException {
         //Make request
-        webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
+        webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
+                .put(javax.ws.rs.client.Entity.entity(requestEntity, 
+                                    javax.ws.rs.core.MediaType.APPLICATION_XML),
+                        UserBean.class);
     }
     /**
      * Send a request to the user RESTful web service to delete a user identified by its id.
      * @param id The id of the user entity to be deleted.
      * @throws ClientErrorException If there is an error while processing. The error is wrapped in a HTTP error response.  
      */
-    public void delete(String id) throws ClientErrorException {
+    public void delete(String id) throws WebApplicationException {
         //Make request
-        webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request().delete();
+        webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id}))
+                .request().delete(UserBean.class);
     }
     /**
      * Close RESTful web service client.
