@@ -12,10 +12,9 @@ import java.util.logging.Logger;
 import javafxapplicationud3example.rest.UserRESTClient;
 import javafxapplicationud3example.transferObjects.DepartmentBean;
 import javafxapplicationud3example.transferObjects.UserBean;
-import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.GenericType;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.GenericType;
 
 /**
  * This class implements {@link UsersManager} business logic interface using a 

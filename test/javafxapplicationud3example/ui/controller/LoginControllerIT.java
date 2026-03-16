@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import javafxapplicationud3example.ApplicationUD3Example;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -31,27 +32,39 @@ public class LoginControllerIT extends ApplicationTest {
      * @param stage Primary Stage object
      * @throws Exception If there is any error
      */
-    /*@Override public void start(Stage stage) throws Exception {
+    @Override 
+    public void start(Stage stage) throws Exception {
        new ApplicationUD3Example().start(stage);
-    }*/
+    }
     /**
      * Stops application to be tested: it does nothing.
      */
-    @Override public void stop() {}
+    @Override 
+    public void stop() throws TimeoutException {
+        FxToolkit.hideStage();
+        FxToolkit.cleanupStages();
+
+    }
+    /*@After
+    public void close_window() throws Exception {
+        FxToolkit.hideStage();
+        FxToolkit.cleanupStages();
+    }*/
     /**
      * Set up Java FX fixture for tests. This is a general approach for using a 
      * unique instance of the application in the test.
      * @throws java.util.concurrent.TimeoutException
      */
-    @BeforeClass
+    /*@BeforeClass
     public static void setUpClass() throws TimeoutException {
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(ApplicationUD3Example.class);
-   }
+    }*/
     /**
      * Test of initial state of login view.
      */
     @Test
+    //@Ignore
     public void test1_InitialState() {
         verifyThat("#tfUsuario", hasText(""));
         verifyThat("#tfPassword",hasText(""));
@@ -60,6 +73,7 @@ public class LoginControllerIT extends ApplicationTest {
     /**
      * Test test that button Aceptar is disabled if user or password fields are empty.
     */ 
+    //@Ignore
     @Test
     public void test2_AceptarIsDisabled() {
         clickOn("#tfUsuario");
@@ -75,6 +89,7 @@ public class LoginControllerIT extends ApplicationTest {
     /**
      * Test test that button Aceptar is enabled when user and password fields are full.
     */ 
+    //@Ignore
     @Test
     public void test3_AceptarIsEnabled() {
         clickOn("#tfUsuario");
@@ -87,6 +102,7 @@ public class LoginControllerIT extends ApplicationTest {
      * Test test that user's manager view is opened when button Aceptar is 
      * clicked
     */ 
+    //@Ignore
     @Test
     public void test4_UsersViewOpenedOnAceptarClick() {
         clickOn("#tfUsuario");

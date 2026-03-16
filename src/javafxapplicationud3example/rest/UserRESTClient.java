@@ -5,13 +5,13 @@
  */
 package javafxapplicationud3example.rest;
 
-import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
+import jakarta.ws.rs.ClientErrorException;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.GenericType;
 import java.util.ResourceBundle;
 import javafxapplicationud3example.transferObjects.UserBean;
-import javax.ws.rs.WebApplicationException;
+import jakarta.ws.rs.WebApplicationException;
 
 
 /**
@@ -42,7 +42,7 @@ public class UserRESTClient {
      */
     public UserRESTClient() {
         //Create RESTful client
-        client = javax.ws.rs.client.ClientBuilder.newClient();
+        client = jakarta.ws.rs.client.ClientBuilder.newClient();
         //Establish the path of the WebTarget object associated to the client
         webTarget = client.target(BASE_URI).path("users");
     }
@@ -59,7 +59,7 @@ public class UserRESTClient {
         //Set the path for the request.
         resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{id}));
         //Make request and return data from the response
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+        return resource.request(jakarta.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
     /**
      * Get a list of user's entities XML representation from the user RESTful web service and 
@@ -71,7 +71,7 @@ public class UserRESTClient {
     public <T> T findAll_XML(GenericType<T> responseType) throws WebApplicationException {
         WebTarget resource = webTarget;
         //Make request and return data from the response
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+        return resource.request(jakarta.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
     /**
      * Get a list of department's entities XML representation from the user RESTful web service and 
@@ -85,7 +85,7 @@ public class UserRESTClient {
         //Set the path for the request.
         resource = resource.path("departments");
         //Make request and return data from the response
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+        return resource.request(jakarta.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
     /**
      * Create an user's entity XML representation and send it as a request to create it
@@ -95,9 +95,9 @@ public class UserRESTClient {
      */
     public void create_XML(Object requestEntity) throws WebApplicationException {
         //Make request
-        webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
-                .post(javax.ws.rs.client.Entity.entity(requestEntity,
-                                    javax.ws.rs.core.MediaType.APPLICATION_XML),
+        webTarget.request(jakarta.ws.rs.core.MediaType.APPLICATION_XML)
+                .post(jakarta.ws.rs.client.Entity.entity(requestEntity,
+                                    jakarta.ws.rs.core.MediaType.APPLICATION_XML),
                         UserBean.class);
     }
     /**
@@ -108,9 +108,9 @@ public class UserRESTClient {
      */
     public void update_XML(Object requestEntity) throws WebApplicationException {
         //Make request
-        webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
-                .put(javax.ws.rs.client.Entity.entity(requestEntity, 
-                                    javax.ws.rs.core.MediaType.APPLICATION_XML),
+        webTarget.request(jakarta.ws.rs.core.MediaType.APPLICATION_XML)
+                .put(jakarta.ws.rs.client.Entity.entity(requestEntity, 
+                                    jakarta.ws.rs.core.MediaType.APPLICATION_XML),
                         UserBean.class);
     }
     /**

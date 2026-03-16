@@ -7,7 +7,7 @@ package javafxapplicationud3example.transferObjects;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * Data Transfer Object used in UI and client side for representing Department entity.

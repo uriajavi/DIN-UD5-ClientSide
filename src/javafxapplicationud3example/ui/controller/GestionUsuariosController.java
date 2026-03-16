@@ -43,13 +43,13 @@ import javafxapplicationud3example.transferObjects.DepartmentBean;
 import javafxapplicationud3example.transferObjects.Profile;
 import javafxapplicationud3example.transferObjects.UserBean;
 import javax.swing.WindowConstants;
-import net.sf.jasperreports.engine.JRException;
+/*import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.view.JasperViewer;
+import net.sf.jasperreports.view.JasperViewer;*/
 
 /**
  * Controller class for users' management view . 
@@ -471,7 +471,7 @@ public class GestionUsuariosController extends GenericController{
      * @param event The ActionEvent object for the event.
      */
     @FXML
-    private void handleImprimirAction(ActionEvent event){
+    private void handleImprimirAction(ActionEvent event){/*
         try {
             LOGGER.info("Beginning printing action...");
             JasperReport report=
@@ -498,7 +498,7 @@ public class GestionUsuariosController extends GenericController{
             LOGGER.log(Level.SEVERE,
                         "UI GestionUsuariosController: Error printing report: {0}",
                         ex.getMessage());
-        }
+        }*/
     }
     /**
      * Action event handler for help button. It shows a Stage containing a scene 
