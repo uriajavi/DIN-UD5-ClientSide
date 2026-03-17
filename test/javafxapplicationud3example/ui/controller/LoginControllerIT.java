@@ -37,13 +37,12 @@ public class LoginControllerIT extends ApplicationTest {
        new ApplicationUD3Example().start(stage);
     }
     /**
-     * Stops application to be tested: it does nothing.
+     * Stops application to be tested
      */
     @Override 
     public void stop() throws TimeoutException {
         FxToolkit.hideStage();
         FxToolkit.cleanupStages();
-
     }
     /*@After
     public void close_window() throws Exception {

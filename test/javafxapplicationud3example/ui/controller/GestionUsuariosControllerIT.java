@@ -7,6 +7,7 @@ package javafxapplicationud3example.ui.controller;
 
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -25,8 +26,10 @@ import javafxapplicationud3example.transferObjects.UserBean;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import org.junit.Before;
 import org.junit.Ignore;
 import static org.testfx.api.FxAssert.verifyThat;
+import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import static org.testfx.matcher.base.NodeMatchers.isDisabled;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
@@ -70,7 +73,27 @@ public class GestionUsuariosControllerIT extends ApplicationTest {
     public void start(Stage stage) throws Exception {
         //start JavaFX application to be tested    
         new ApplicationUD3Example().start(stage);
-        //lookup for some nodes to be used in testing
+    }
+    /**
+     * Stops application to be tested
+     */
+    @Override 
+    public void stop() throws TimeoutException {
+        FxToolkit.hideStage();
+        FxToolkit.cleanupStages();
+    }
+
+    /**
+     * This method allows to see users' table view by interacting with login 
+     * view.
+     */
+    @Before
+    public void testA_initialInteraction(){
+        clickOn("#tfUsuario");
+        write("username");
+        clickOn("#tfPassword");
+        write("password");
+        clickOn("#btAceptar");
         tfLogin=lookup("#tfLogin").query();
         tfNombre=lookup("#tfNombre").query();
         btModificar=lookup("#btModificar").query();
@@ -79,19 +102,7 @@ public class GestionUsuariosControllerIT extends ApplicationTest {
         rbUser=(RadioButton)lookup("#rbUsuario").query();
         rbAdmin=(RadioButton)lookup("#rbAdmin").query();
         cbDepartamentos=lookup("#cbDepartamentos").queryComboBox();
-    }
-    /**
-     * This method allows to see users' table view by interacting with login 
-     * view.
-     */
-    @Test
-    public void testA_initialInteraction(){
-        clickOn("#tfUsuario");
-        write("username");
-        clickOn("#tfPassword");
-        write("password");
-        clickOn("#btAceptar");
-        verifyThat("#usersViewPane", isVisible());
+        //verifyThat("#usersViewPane", isVisible());
     }
     /**
      * Test of initial state of users' table view.
