@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f5ede580-789e-483d-aa7f-7fc97f683ba1">
+<!-- Created with Jaspersoft Studio version 6.21.5.final using JasperReports Library version 6.21.5-74d586df47b25dbd05bd0957999819196e59934a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" 
+              name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" 
+              topMargin="20" bottomMargin="20" uuid="f5ede580-789e-483d-aa7f-7fc97f683ba1">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+        <parameter name="LOGO" class="java.io.InputStream"/>
 	<field name="login" class="java.lang.String"/>
 	<field name="nombre" class="java.lang.String"/>
 	<field name="departamento.name" class="java.lang.String"/>
@@ -11,14 +16,20 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="79" splitType="Stretch">
+		<band height="90" splitType="Stretch">
 			<staticText>
-				<reportElement x="222" y="31" width="100" height="20" uuid="4795ddc7-9d6f-48fc-97a5-49f6cdd950f4"/>
+				<reportElement x="120" y="60" width="330" height="19" uuid="4795ddc7-9d6f-48fc-97a5-49f6cdd950f4"/>
 				<textElement>
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Report Test]]></text>
+				<text><![CDATA[Report Test Modified with Jaspersoft Studio]]></text>
 			</staticText>
+			<image>
+				<reportElement x="0" y="0" width="310" height="40" uuid="1089fe07-00e5-4313-a2f2-89561d54a8be">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+                                <imageExpression class="java.io.InputStream"><![CDATA[$P{LOGO}]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<pageHeader>
